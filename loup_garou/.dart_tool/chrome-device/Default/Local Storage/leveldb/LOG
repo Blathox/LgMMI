@@ -1,0 +1,8 @@
+2024/11/15-11:31:14.543 a6c Reusing MANIFEST C:\Users\perig\AppData\Local\Temp\flutter_tools.e08108c8\flutter_tools_chrome_device.b8412457\Default\Local Storage\leveldb/MANIFEST-000001
+2024/11/15-11:31:14.549 a6c Recovering log #6
+2024/11/15-11:31:14.550 a6c Level-0 table #9: started
+2024/11/15-11:31:14.554 a6c Level-0 table #9: 76970 bytes OK
+2024/11/15-11:31:14.555 a6c Recovering log #9
+2024/11/15-11:31:14.557 a6c Reusing old log C:\Users\perig\AppData\Local\Temp\flutter_tools.e08108c8\flutter_tools_chrome_device.b8412457\Default\Local Storage\leveldb/000009.log 
+2024/11/15-11:31:14.558 a6c Delete type=0 #6
+2024/11/15-11:31:14.558 a6c Delete type=2 #10

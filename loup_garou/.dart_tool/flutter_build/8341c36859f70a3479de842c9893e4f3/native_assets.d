@@ -1,0 +1,1 @@
+ C:\\Users\\perig\\OneDrive\\Documents\\MMI\\3\\S5\\Dispositifs\ interactifs\\loup-garou\\loup_garou\\.dart_tool\\flutter_build\\8341c36859f70a3479de842c9893e4f3\\native_assets.yaml: 
