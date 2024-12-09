@@ -87,7 +87,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   onPressed: () async {
                     final sm = ScaffoldMessenger.of(context);
-                    final authResponse = await supabase.auth.signUp(
+                    try{
+                       final authResponse = await supabase.auth.signUp(
                         password: passwordController.text,
                          email: emailController.text,
                          data:{
@@ -96,9 +97,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                      sm.showSnackBar(SnackBar(
                           content: 
                               Text("Logged in: ${authResponse.user?.email}")));
-                              
-                  },
+                    await supabase.from('USERS').insert({
+                      'id_user': authResponse.user?.id,
+                      'username': usernameController.text,
 
+                    });
+
+                    }
+                    catch (e){
+                      sm.showSnackBar(SnackBar(
+                          content: 
+                              Text("Erreur lors de l'inscription: $e")));
+                    }
+                    
+                   
+                  },
+      
                   child: const Text(
                     "S'inscrire",
                     style:
