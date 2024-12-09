@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.loup_garou.app-mergeDebugResources-25:/values-fi/values-fi.xml",
+            "outputFile": "com.example.loup_garou.app-mergeDebugResources-27:/values-fi/values-fi.xml",
             "map": [
                 {
                     "source": "C:\\Users\\perig\\.gradle\\caches\\transforms-3\\9a7a783aa8682aaa028c57031d48c15e\\transformed\\browser-1.8.0\\res\\values-fi\\values-fi.xml",

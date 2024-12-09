@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.loup_garou.app-mergeDebugResources-25:/values/values.xml",
+            "outputFile": "com.example.loup_garou.app-mergeDebugResources-27:/values/values.xml",
             "map": [
                 {
                     "source": "C:\\Users\\perig\\.gradle\\caches\\transforms-3\\53f114d110e356c36b5f50ab357f361f\\transformed\\jetified-startup-runtime-1.1.1\\res\\values\\values.xml",
@@ -127,25 +127,6 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\perig\\OneDrive\\Documents\\MMI\\3\\S5\\Dispositifs interactifs\\loup-garou\\loup_garou\\android\\app\\src\\main\\res\\values\\styles.xml",
-                    "from": {
-                        "startLines": "3,14",
-                        "startColumns": "4,4",
-                        "startOffsets": "176,832",
-                        "endLines": "7,16",
-                        "endColumns": "12,12",
-                        "endOffsets": "483,998"
-                    },
-                    "to": {
-                        "startLines": "165,169",
-                        "startColumns": "4,4",
-                        "startOffsets": "8569,8750",
-                        "endLines": "168,171",
-                        "endColumns": "12,12",
-                        "endOffsets": "8745,8914"
-                    }
-                },
-                {
                     "source": "C:\\Users\\perig\\.gradle\\caches\\transforms-3\\9a7a783aa8682aaa028c57031d48c15e\\transformed\\browser-1.8.0\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11",
@@ -179,6 +160,25 @@
                         "endLines": "25,55,56,61,62,63,64,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,126,127,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,151,153,154,155,156,157,158,159,164,172,176,177,181,182,183,184,201,211,244,265,307,313",
                         "endColumns": "59,71,87,64,65,68,62,69,67,71,69,60,73,72,60,60,61,63,61,60,67,99,59,65,72,68,56,51,61,71,75,64,58,58,59,59,59,59,59,59,59,59,59,59,58,59,59,59,59,59,59,59,59,59,59,58,59,59,58,58,58,58,58,58,34,34,54,62,54,57,57,60,62,56,50,49,60,56,65,33,34,34,69,66,71,68,68,73,71,87,70,116,12,109,12,128,71,66,24,24,24,24,24,24",
                         "endOffsets": "780,1790,1878,2192,2258,2327,2390,2603,2671,2743,2813,2874,2948,3021,3082,3143,3205,3269,3331,3392,3460,3560,3620,3686,3759,3828,3885,3937,3999,4071,4147,4212,4271,4330,4390,4450,4510,4570,4630,4690,4750,4810,4870,4930,4989,5049,5109,5169,5229,5289,5349,5409,5469,5529,5589,5648,5708,5768,5827,5886,5945,6004,6063,6122,6274,6309,6471,6534,6589,6647,6705,6766,6829,6886,6937,6987,7048,7105,7171,7205,7240,7275,7616,7766,7838,7907,7976,8050,8122,8210,8564,9031,9232,9342,9543,9672,9744,9811,10367,10668,12399,13080,14081,14248"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\perig\\OneDrive\\Documents\\MMI\\3\\S5\\Dispositifs interactifs\\loup-garou\\LgMMI\\loup_garou\\android\\app\\src\\main\\res\\values\\styles.xml",
+                    "from": {
+                        "startLines": "3,14",
+                        "startColumns": "4,4",
+                        "startOffsets": "176,832",
+                        "endLines": "7,16",
+                        "endColumns": "12,12",
+                        "endOffsets": "483,998"
+                    },
+                    "to": {
+                        "startLines": "165,169",
+                        "startColumns": "4,4",
+                        "startOffsets": "8569,8750",
+                        "endLines": "168,171",
+                        "endColumns": "12,12",
+                        "endOffsets": "8745,8914"
                     }
                 }
             ]

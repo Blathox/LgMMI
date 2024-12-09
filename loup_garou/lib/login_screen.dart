@@ -1,11 +1,14 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:flutter/material.dart';
-import 'package:loup_garou/signup_screen.dart';
+import 'package:loup_garou/signup_screen2.dart';
+
+final supabase = Supabase.instance.client;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -65,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               // Champ mot de passe avec largeur adaptative
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.05,
+                height:MediaQuery.of(context).size.height * 0.05,
                 width: double.infinity,
                 child: TextField(
                   controller: passwordController,
@@ -120,10 +123,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.all(yellow),
                   ),
-                  onPressed: () {
-                    // Action de connexion
-                    // ignore: avoid_print
-                    print('Connexion avec : ${emailController.text}');
+                  onPressed: () async {
+                    final sm = ScaffoldMessenger.of(context);
+                    final authResponse = await supabase.auth.signInWithPassword(
+                        password: passwordController.text,
+                        email: emailController.text);
+                   sm.showSnackBar(SnackBar(
+                        content:
+                            Text("Logged in: ${authResponse.user?.email}")));
                   },
                   child: const Text(
                     'Connexion',
@@ -134,57 +141,60 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 8),
               // Bouton pour se connecter avec Google
-              const Text("Ou essayez de vous connecter avec",
-                  style: TextStyle(
-                      fontFamily: 'Poppins', fontSize: 11, color: Colors.grey,),),
+              const Text(
+                "Ou essayez de vous connecter avec",
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 11,
+                  color: Colors.grey,
+                ),
+              ),
               //Logos
-                            const SizedBox(height: 8),
+              const SizedBox(height: 8),
 
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [   SizedBox(
-                child: IconButton(
-                  icon: 
-                    Image.asset('assets/images/logo/logo_google.png',
-                    width: 30,
+                children: [
+                  SizedBox(
+                    child: IconButton(
+                      icon: Image.asset(
+                        'assets/images/logo/logo_google.png',
+                        width: 30,
+                      ),
+                      tooltip: 'Connectez vous avec google',
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(Colors.white),
+                      ),
+                      onPressed: () {
+                        // Action de connexion avec Google
+                        // ignore: avoid_print
+                        print('Connexion avec Google');
+                      },
+                    ),
                   ),
-                  tooltip: 'Connectez vous avec google',
-                
-                  style: ButtonStyle(
-                    backgroundColor:
-                        WidgetStateProperty.all(Colors.white),
-  
+                  const SizedBox(
+                    width: 20,
                   ),
-                  onPressed: () {
-                    // Action de connexion avec Google
-                    // ignore: avoid_print
-                    print('Connexion avec Google');
-                  },
-                ),
+                  IconButton(
+                    icon: Image.asset(
+                      'assets/images/logo/logo_apple.png',
+                      width: 30,
+                      height: 30,
+                    ),
+                    tooltip: 'Connectez vous avec apple',
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(Colors.white),
+                    ),
+                    onPressed: () {
+                      // Action de connexion avec Apple
+                      // ignore: avoid_print
+                      print('Connexion avec Apple');
+                    },
+                  ),
+                ],
               ),
-              const SizedBox(width: 20,),
-              IconButton(
-                 icon: 
-                    Image.asset('assets/images/logo/logo_apple.png',
-                    width: 30,
-                    height: 30,
-                  ),
-                  tooltip: 'Connectez vous avec apple',
-                  
-                  style: ButtonStyle(
-                    backgroundColor:
-                        WidgetStateProperty.all(Colors.white),
-  
-                  ),
-                  onPressed: () {
-                    // Action de connexion avec Apple
-                    // ignore: avoid_print
-                    print('Connexion avec Apple');
-                  },
-              ),],),
-           
 
               // Bouton pour s'inscrire
               TextButton(
