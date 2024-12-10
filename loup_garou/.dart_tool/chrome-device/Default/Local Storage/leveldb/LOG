@@ -1,12 +1,17 @@
-<<<<<<< HEAD
-2024/12/09-11:35:21.345 5040 Reusing MANIFEST C:\Users\perig\AppData\Local\Temp\flutter_tools.71757354\flutter_tools_chrome_device.40b60c23\Default\Local Storage\leveldb/MANIFEST-000001
-2024/12/09-11:35:21.354 5040 Recovering log #9
-2024/12/09-11:35:21.355 5040 Level-0 table #11: started
-2024/12/09-11:35:21.362 5040 Level-0 table #11: 67675 bytes OK
-2024/12/09-11:35:21.367 5040 Delete type=0 #6
-2024/12/09-11:35:21.368 5040 Delete type=0 #9
-2024/12/09-11:35:21.368 5040 Delete type=2 #10
-=======
-2024/12/09-12:00:05.950 1c08 Creating DB C:\Users\i2203301\AppData\Local\Temp\flutter_tools.848277f4\flutter_tools_chrome_device.d8e6ae3e\Default\Local Storage\leveldb since it was missing.
-2024/12/09-12:00:05.992 1c08 Reusing MANIFEST C:\Users\i2203301\AppData\Local\Temp\flutter_tools.848277f4\flutter_tools_chrome_device.d8e6ae3e\Default\Local Storage\leveldb/MANIFEST-000001
->>>>>>> 36ced3beecc1830dab3bf07f30cb7687cf1fffe1
+2024/12/10-11:24:47.136 1b30 Reusing MANIFEST C:\Users\i2203301\AppData\Local\Temp\flutter_tools.f9abd1a\flutter_tools_chrome_device.74695e48\Default\Local Storage\leveldb/MANIFEST-000001
+2024/12/10-11:24:47.150 1b30 Recovering log #3
+2024/12/10-11:24:47.150 1b30 Recovering log #6
+2024/12/10-11:24:47.152 1b30 Level-0 table #4: started
+2024/12/10-11:24:47.159 1b30 Level-0 table #4: 76970 bytes OK
+2024/12/10-11:24:47.160 1b30 Recovering log #9
+2024/12/10-11:24:47.160 1b30 Level-0 table #7: started
+2024/12/10-11:24:47.169 1b30 Level-0 table #7: 67675 bytes OK
+2024/12/10-11:24:47.171 1b30 Recovering log #12
+2024/12/10-11:24:47.174 1b30 Reusing old log C:\Users\i2203301\AppData\Local\Temp\flutter_tools.f9abd1a\flutter_tools_chrome_device.74695e48\Default\Local Storage\leveldb/000012.log 
+2024/12/10-11:24:47.180 1b30 Delete type=0 #3
+2024/12/10-11:24:47.180 1b30 Delete type=2 #5
+2024/12/10-11:24:47.180 1b30 Delete type=0 #6
+2024/12/10-11:24:47.180 1b30 Delete type=2 #9
+2024/12/10-11:24:47.180 1b30 Delete type=0 #9
+2024/12/10-11:24:47.180 1b30 Delete type=2 #10
+2024/12/10-11:24:47.180 1b30 Delete type=2 #11

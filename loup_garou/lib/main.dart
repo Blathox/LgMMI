@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loup_garou/login_screen.dart';
 import 'package:loup_garou/pages/home_page.dart';
+import 'package:loup_garou/pages/home_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
           titleMedium: TextStyle(fontFamily: 'Poppins',fontSize: 14, color: Color.fromARGB(255, 255, 200, 20),fontWeight: FontWeight.bold),
         )
       ),
-      home: LoginScreen(),
+      home: MainPage(),
     );
   }
 }
