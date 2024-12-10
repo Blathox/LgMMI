@@ -1,3 +1,6 @@
-2024/12/09-11:21:26.569 363c Reusing MANIFEST C:\Users\perig\AppData\Local\Temp\flutter_tools.5122b78\flutter_tools_chrome_device.2f4a7d9b\Default\Sync Data\LevelDB/MANIFEST-000001
-2024/12/09-11:21:26.572 363c Recovering log #3
-2024/12/09-11:21:26.572 363c Reusing old log C:\Users\perig\AppData\Local\Temp\flutter_tools.5122b78\flutter_tools_chrome_device.2f4a7d9b\Default\Sync Data\LevelDB/000003.log 
+<<<<<<< HEAD
+2024/12/09-11:35:21.252 316c Reusing MANIFEST C:\Users\perig\AppData\Local\Temp\flutter_tools.71757354\flutter_tools_chrome_device.40b60c23\Default\Sync Data\LevelDB/MANIFEST-000001
+2024/12/09-11:35:21.261 316c Recovering log #3
+2024/12/09-11:35:21.262 316c Reusing old log C:\Users\perig\AppData\Local\Temp\flutter_tools.71757354\flutter_tools_chrome_device.40b60c23\Default\Sync Data\LevelDB/000003.log 
+=======
+>>>>>>> 36ced3beecc1830dab3bf07f30cb7687cf1fffe1

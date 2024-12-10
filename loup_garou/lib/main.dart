@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loup_garou/login_screen.dart';
 import 'package:loup_garou/pages/home_page.dart';
+import 'package:loup_garou/signup_screen2.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-  final Color yellow = const Color.fromARGB(255, 255, 200, 20);
+  const Color yellow = Color.fromARGB(255, 255, 200, 20);
 
     return MaterialApp(
       title: 'Flutter Demo',
@@ -31,7 +32,12 @@ class MyApp extends StatelessWidget {
           titleMedium: TextStyle(fontFamily: 'Poppins',fontSize: 14, color: Color.fromARGB(255, 255, 200, 20),fontWeight: FontWeight.bold),
         )
       ),
-      home: LoginScreen(),
+      routes: {
+        '/connexion': (context) => const LoginScreen(),
+        '/home': (context) => const MyHomePage(title: 'Home page of Loup Garou'),
+        '/inscription': (context) => const SignUpScreen(),
+      },
+      home: const LoginScreen(),
     );
   }
 }

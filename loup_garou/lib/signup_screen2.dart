@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loup_garou/inputs/mail_pseudo.dart';
 import 'package:loup_garou/inputs/password.dart';
 import 'package:loup_garou/stepper/signin_stepper.dart';
+import 'package:loup_garou/utils/createUser.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -10,6 +11,7 @@ class SignUpScreen extends StatefulWidget {
   @override
   State createState() => _SignUpScreenState();
 }
+
 int indexStepper = 0;
 
 class _SignUpScreenState extends State<SignUpScreen> {
@@ -29,6 +31,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     //int indexStepper = 0;
     TextStyle h1 = Theme.of(context).textTheme.titleLarge!;
     TextStyle h2 = Theme.of(context).textTheme.titleMedium!;
+
     return Scaffold(
       appBar: AppBar(
         leading: const Icon(Icons.arrow_back),
@@ -55,10 +58,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     textAlign: TextAlign.left,
                   ),
             SigninStepper(indexStepper: indexStepper),
-            indexStepper == 0 ? MailPseudo(
-              emailController:emailController,
-              usernameController:usernameController)
-             : Password(passwordController: passwordController,confirmPasswordController: confirmPasswordController),
+            indexStepper == 0
+                ? MailPseudo(
+                    emailController: emailController,
+                    usernameController: usernameController)
+                : Password(
+                    passwordController: passwordController,
+                    confirmPasswordController: confirmPasswordController),
             const SizedBox(height: 24),
             if (indexStepper == 0)
               SizedBox(
@@ -87,32 +93,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   onPressed: () async {
                     final sm = ScaffoldMessenger.of(context);
-                    try{
-                       final authResponse = await supabase.auth.signUp(
-                        password: passwordController.text,
-                         email: emailController.text,
-                         data:{
-                            'username': usernameController.text
-                         });
-                     sm.showSnackBar(SnackBar(
-                          content: 
-                              Text("Logged in: ${authResponse.user?.email}")));
-                    await supabase.from('USERS').insert({
-                      'id_user': authResponse.user?.id,
-                      'username': usernameController.text,
-
-                    });
-
+                    if (passwordController.text ==
+                        confirmPasswordController.text) {
+                      try {
+                       createUser(context, emailController.text, passwordController.text, usernameController.text);
+                        // ignore: use_build_context_synchronously
+                        Navigator.pushNamed(context, '/connexion');
+                      } catch (e) {
+                        sm.showSnackBar(SnackBar(
+                            content: Text("Erreur lors de l'inscription: $e")));
+                      }
+                    } else {
+                      sm.showSnackBar(const SnackBar(content: Text("Passwords do not match")));
                     }
-                    catch (e){
-                      sm.showSnackBar(SnackBar(
-                          content: 
-                              Text("Erreur lors de l'inscription: $e")));
-                    }
-                    
-                   
                   },
-      
                   child: const Text(
                     "S'inscrire",
                     style:

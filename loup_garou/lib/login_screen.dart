@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
+import 'package:loup_garou/utils/checkAuth.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -28,6 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     TextStyle textStyle = Theme.of(context).textTheme.bodyMedium!;
     return Scaffold(
       appBar: AppBar(
@@ -107,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SignUpScreen()),
+                      MaterialPageRoute(builder: (context) => const SignUpScreen()),
                     );
                   },
                   child: const Text(
@@ -131,7 +133,13 @@ class _LoginScreenState extends State<LoginScreen> {
                    sm.showSnackBar(SnackBar(
                         content:
                             Text("Logged in: ${authResponse.user?.email}")));
+
+
+                  if(await checkAuth()){
+                    Navigator.pushNamed(context, '/home');
+                  }
                   },
+
                   child: const Text(
                     'Connexion',
                     style:
@@ -201,7 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SignUpScreen()),
+                    MaterialPageRoute(builder: (context) => const SignUpScreen()),
                   );
                 },
                 child: Row(

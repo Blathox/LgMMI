@@ -1,1 +1,4 @@
 SharedPreferences/
+.flutter-plugins
+# Ignore the package configuration file
+package_config.json
