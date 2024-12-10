@@ -1,87 +1,140 @@
 import 'package:flutter/material.dart';
+import 'chose_game_mode.dart';
 
 void main() {
   runApp(const MyApp());
 }
-//feur
+
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MainPage(),
+      home: const MainPage(),
+      
     );
   }
 }
 
 class MainPage extends StatelessWidget {
+  const MainPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Bouton "Jouer"
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.yellow,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+            // Boutons principaux
+            SizedBox(
+              width: 250,
+              height: 45,
+              child: ElevatedButton(
+                
+                onPressed: () {
+                  Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ChoseGameMode()),
+            );
+                },
+                
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                  ),
+                  backgroundColor: Colors.orange,
+                ),
+                child: const Text(
+                  'Jouer',
+                  style: TextStyle(color: Colors.white, fontSize: 18),
                 ),
               ),
-              child: const Text('Jouer', style: TextStyle(fontSize: 18)),
             ),
-            const SizedBox(height: 16),
-            // Bouton "Mon profil"
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.yellow,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+            const SizedBox(height: 10),
+            SizedBox(
+              width: 250,
+              height: 45,
+              child: ElevatedButton(
+                onPressed: () {
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                  ),
+                  backgroundColor: Colors.orange,
+                ),
+                child: const Text(
+                  'Mon profil',
+                  style: TextStyle(color: Colors.white, fontSize: 18),
                 ),
               ),
-              child: const Text('Mon profil', style: TextStyle(fontSize: 18)),
             ),
-            const SizedBox(height: 16),
-            // Bouton "Règles & Rôles"
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.yellow,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+            const SizedBox(height: 10),
+            SizedBox(
+              width: 250,
+              height: 45,
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                  ),
+                  backgroundColor: Colors.orange,
+                ),
+                child: const Text(
+                  'Règles & Rôles',
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                  
                 ),
               ),
-              child: const Text('Règles & Rôles', style: TextStyle(fontSize: 18)),
             ),
-            const SizedBox(height: 32),
-            // Icons bas
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.group, color: Colors.yellow, size: 32),
-                ),
-                const SizedBox(width: 24),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.settings, color: Colors.yellow, size: 32),
-                ),
-              ],
+            const SizedBox(height: 10),
+            // Ligne des icônes dans un conteneur de largeur fixe
+            SizedBox(
+  width: 250, // Même largeur que les boutons principaux
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      // Bouton "Joueurs"
+      Expanded(
+        child: SizedBox(
+          height: 45, // Définir la hauteur ici
+          child: ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.orange,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
             ),
+            child: const Icon(Icons.group, color: Colors.white, size: 22.5),
+          ),
+        ),
+      ),
+      const SizedBox(width: 10), // Espacement fixe entre les deux icônes
+      // Bouton "Paramètres"
+      Expanded(
+        child: SizedBox(
+          height: 45, // Définir la hauteur ici
+          child: ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.orange,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            child: const Icon(Icons.settings, color: Colors.white, size: 22.5),
+          ),
+        ),
+      ),
+    ],
+  ),
+)
+
           ],
         ),
       ),

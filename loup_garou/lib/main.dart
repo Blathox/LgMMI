@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:loup_garou/login_screen.dart';
 import 'package:loup_garou/pages/home_page.dart';
-import 'package:loup_garou/signup_screen2.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:loup_garou/signup_screen2.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
