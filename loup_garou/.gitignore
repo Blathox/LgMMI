@@ -3,4 +3,5 @@ SharedPreferences/
 # Ignore the package configuration file
 package_config.json
 
-chrome-device/
+# Ignore the .dart_tool directory, which is used by Dart's build system and package manager.
+.dart_tool/
