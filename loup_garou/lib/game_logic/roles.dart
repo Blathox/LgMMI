@@ -14,8 +14,7 @@ class LoupGarou extends RoleAction {
   List<String> availableTargets = []; 
   String? chosenTarget; 
 
-  LoupGarou({required String name, required String description})
-      : super(name: name, description: description);
+  LoupGarou({required super.name, required super.description});
 
   @override
   void performAction() {
@@ -54,34 +53,13 @@ class LoupGarou extends RoleAction {
 }
 
 ////////////////////////////////////////////////////////////////
-///
-///import './lib/roles.dart'; // Assure-toi que le chemin correspond à ton fichier roles.dart
 
-void main() {
-  // Étape 1 : Créer une instance de Loup-Garou
-  LoupGarou loupGarou = LoupGarou(
-    name: "Loup-Garou",
-    description: "Élimine un joueur chaque nuit.",
-  );
+class Villageois extends RoleAction {
+  Villageois({required super.name, required super.description});
 
-  // Étape 2 : Définir les cibles disponibles
-  print("=== Test : Définir les cibles disponibles ===");
-  loupGarou.setAvailableTargets(["Thomas", "Charlie", "Oriane"]);
-
-  // Étape 3 : Choisir une cible valide
-  print("\n=== Test : Choisir une cible valide ===");
-  loupGarou.selectTarget("Charlie");
-
-  // Étape 4 : Effectuer l'attaque
-  print("\n=== Test : Effectuer l'attaque ===");
-  loupGarou.performAction();
-
-  // Étape 5 : Tester avec une cible invalide
-  print("\n=== Test : Choisir une cible invalide ===");
-  loupGarou.selectTarget("Alex");
-
-  // Étape 6 : Tester sans cible choisie
-  print("\n=== Test : Effectuer l'attaque sans cible choisie ===");
-  loupGarou.chosenTarget = null; // Réinitialiser la cible
-  loupGarou.performAction();
+  @override
+  void performAction() {
+    print("Le Villageois participe aux votes pour éliminer un joueur.");
+  }
 }
+
