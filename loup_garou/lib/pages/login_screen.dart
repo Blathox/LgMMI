@@ -7,7 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:flutter/material.dart';
-import 'package:loup_garou/signup_screen2.dart';
+import 'package:loup_garou/pages/signup_screen2.dart';
 
 final supabase = Supabase.instance.client;
 
@@ -34,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Connexion'),
+       
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -207,10 +208,8 @@ class _LoginScreenState extends State<LoginScreen> {
               // Bouton pour s'inscrire
               TextButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SignUpScreen()),
-                  );
+                  Navigator.pushNamed(
+                    context,'/inscription');
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.max,

@@ -34,8 +34,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: const Icon(Icons.arrow_back),
-      ),
+ leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushNamed(context, "/connexion");
+          },
+        ),      ),
       body: SizedBox(
           height: 500,
           width: 500,

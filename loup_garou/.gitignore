@@ -5,3 +5,5 @@ package_config.json
 
 # Ignore the .dart_tool directory, which is used by Dart's build system and package manager.
 .dart_tool/
+# Ignore the build directory, which is used for temporary files generated during the build process.
+build/
