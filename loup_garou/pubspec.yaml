@@ -41,6 +41,7 @@ dependencies:
   flutter_svg: ^2.0.14
   easy_stepper: ^0.8.5+1
   supabase_flutter: ^2.8.1
+  random_string: ^2.3.1
 
 dev_dependencies:
   flutter_test:
