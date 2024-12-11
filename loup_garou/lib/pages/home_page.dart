@@ -15,7 +15,7 @@ class MainPage extends StatelessWidget {
             // Boutons principaux
             SizedBox(
               width: 250,
-              height: 45,
+              height: 45, 
               child: ElevatedButton(
                 
                 onPressed: () {

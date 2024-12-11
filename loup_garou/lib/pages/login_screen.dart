@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'dart:math';
 import 'dart:ui';
 import 'package:loup_garou/utils/checkAuth.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
