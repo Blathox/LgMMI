@@ -1,5 +1,4 @@
 SharedPreferences/
-.flutter-plugins
 # Ignore the package configuration file
 package_config.json
 
@@ -7,3 +6,15 @@ package_config.json
 .dart_tool/
 # Ignore the build directory, which is used for temporary files generated during the build process.
 build/
+
+# Ignore the .idea directory, which is used by IntelliJ.
+.idea/
+# Ignore the .vscode directory, which is used by Visual Studio Code.
+.vscode/
+# Ignore the .pub directory, which is used by pub package manager.
+.pub/
+# Ignore the .packages file, which is used by the Dart package manager.
+.packages
+# Ignore the .flutter-plugins file, which is used by the Flutter tool.
+.flutter-plugins
+.flutter-plugins-dependencies
