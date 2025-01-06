@@ -4,7 +4,7 @@ class Player {
   String role;
   bool isAlive;
   int voteCount = 0;
-
+  bool isLinked = false;
   Player(this.name, this.role, this.isAlive);
 
   void killed() {
@@ -24,7 +24,10 @@ class Player {
   void addVote() {
     voteCount++;
   }
-
+  void removeVote() {
+    voteCount--;
+  }
+ 
 
   @override
   String toString() {

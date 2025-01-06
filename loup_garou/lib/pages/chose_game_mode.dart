@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class ChoseGameMode extends StatelessWidget {
+  const ChoseGameMode({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Choisir le Mode de Jeu'),
+        title: const Text('Choisir le Mode de Jeu'),
         backgroundColor: Colors.orange,
       ),
       body: Padding(
@@ -14,7 +16,7 @@ class ChoseGameMode extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Titre
-            Text(
+            const Text(
               'Modes de jeu disponibles',
               style: TextStyle(
                 fontSize: 24,
@@ -28,7 +30,7 @@ class ChoseGameMode extends StatelessWidget {
               height: 120,
               child: Container(
                 color: Colors.lightBlueAccent, // Couleur de fond
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     // Titre à gauche
@@ -56,7 +58,7 @@ class ChoseGameMode extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -83,13 +85,17 @@ class ChoseGameMode extends StatelessWidget {
             const SizedBox(height: 20), // Espacement entre les blocs
 
             // Troisième SizedBox
-            SizedBox(
-              height: 100, // Augmenter la hauteur pour inclure la Row
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, "/settingsGame");
+              },
+              child: SizedBox(
+                height: 100, // Augmenter la hauteur pour inclure la Row
               child: Container(
                 color: Colors.pinkAccent, // Couleur de fond
                 child: Column(
                   children: [
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         // Titre à gauche
@@ -112,7 +118,7 @@ class ChoseGameMode extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
+            ),)
           ],
         ),
       ),
