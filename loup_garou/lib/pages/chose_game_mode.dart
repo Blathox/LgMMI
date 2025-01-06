@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:loup_garou/components/game_mode_card.dart';
+import 'package:loup_garou/visuals/colors.dart';
 class ChoseGameMode extends StatelessWidget {
   const ChoseGameMode({super.key});
 
@@ -8,117 +9,19 @@ class ChoseGameMode extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Choisir le Mode de Jeu'),
-        backgroundColor: Colors.orange,
+        backgroundColor: yellow,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Titre
-            const Text(
-              'Modes de jeu disponibles',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+        padding: const EdgeInsets.all(12.0),
+        child: ListView(
+          children: const [
+            // Mode de jeu n°1 : Partie Rapide
+            GameModeCard(
+              title: 'Partie Rapide',
+              icon: Icons.settings,
+              
+
             ),
-            const SizedBox(height: 20), // Espacement entre le titre et le premier bloc
-
-            // Premier SizedBox
-            SizedBox(
-              height: 120,
-              child: Container(
-                color: Colors.lightBlueAccent, // Couleur de fond
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Titre à gauche
-                    Text(
-                      'Mode A',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    // Icône à droite
-                    Icon(Icons.gamepad, size: 30),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            // Image en dessous
-            Image.asset('assets/image1.jpg'), // Remplacer par le chemin de votre image
-
-            const SizedBox(height: 20), // Espacement entre les blocs
-
-            // Deuxième SizedBox
-            SizedBox(
-              height: 120,
-              child: Container(
-                color: Colors.greenAccent, // Couleur de fond
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                      'Mode B',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    // Icône à droite
-                    Icon(Icons.sports_esports, size: 30),
-                      ],
-                      ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset('assets/image2.jpg'),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            // Image en dessous
-
-            const SizedBox(height: 20), // Espacement entre les blocs
-
-            // Troisième SizedBox
-            GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, "/settingsGame");
-              },
-              child: SizedBox(
-                height: 100, // Augmenter la hauteur pour inclure la Row
-              child: Container(
-                color: Colors.pinkAccent, // Couleur de fond
-                child: Column(
-                  children: [
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Titre à gauche
-                        Text(
-                          'Mode C',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        // Icône à droite
-                        Icon(Icons.videogame_asset, size: 30),
-                      ],
-                    ),
-                    const SizedBox(height: 10), // Espacement entre la Row et les images
-                    Row(
-                      children: [
-                        Image.asset('assets/image3.jpg', width: 50, height: 100), // Remplacer par le chemin de votre image
-                        const SizedBox(width: 10), // Espacement entre les images
-                        Image.asset('assets/image4.jpg', width: 50, height: 100), // Remplacer par le chemin de votre image
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),)
           ],
         ),
       ),
