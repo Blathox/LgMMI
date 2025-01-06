@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loup_garou/visuals/colors.dart';
 import 'chose_game_mode.dart';
 
 
@@ -29,7 +30,7 @@ class MainPage extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4),
                   ),
-                  backgroundColor: Colors.orange,
+                  backgroundColor: yellow,
                 ),
                 child: const Text(
                   'Jouer',
@@ -48,7 +49,7 @@ class MainPage extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4),
                   ),
-                  backgroundColor: Colors.orange,
+                  backgroundColor: yellow,
                 ),
                 child: const Text(
                   'Mon profil',
@@ -66,7 +67,7 @@ class MainPage extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4),
                   ),
-                  backgroundColor: Colors.orange,
+                  backgroundColor: yellow,
                 ),
                 child: const Text(
                   'Règles & Rôles',

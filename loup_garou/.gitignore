@@ -18,3 +18,4 @@ build/
 # Ignore the .flutter-plugins file, which is used by the Flutter tool.
 .flutter-plugins
 .flutter-plugins-dependencies
+.zip

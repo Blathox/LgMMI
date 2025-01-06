@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loup_garou/pages/home_page.dart';
 import 'package:loup_garou/pages/login_screen.dart';
+import 'package:loup_garou/visuals/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:loup_garou/pages/signup_screen2.dart';
@@ -20,7 +21,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-  const Color yellow = Color.fromARGB(255, 255, 200, 20);
 
     return MaterialApp(
       title: 'Flutter Demo',
@@ -28,8 +28,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         textTheme: const TextTheme(
           bodyMedium: TextStyle(fontFamily: 'Poppins',fontSize: 11),
-          titleLarge: TextStyle(fontFamily: 'Poppins',fontSize: 20,color: Color.fromARGB(255, 255, 200, 20),fontWeight: FontWeight.bold),
-          titleMedium: TextStyle(fontFamily: 'Poppins',fontSize: 14, color: Color.fromARGB(255, 255, 200, 20),fontWeight: FontWeight.bold),
+          titleLarge: TextStyle(fontFamily: 'Poppins',fontSize: 20,color:yellow,fontWeight: FontWeight.bold),
+          titleMedium: TextStyle(fontFamily: 'Poppins',fontSize: 14, color:yellow,fontWeight: FontWeight.bold),
         )
       ),
       routes: {

@@ -5,6 +5,8 @@ import 'package:loup_garou/stepper/signin_stepper.dart';
 import 'package:loup_garou/utils/createUser.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../visuals/colors.dart';
+
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
@@ -15,11 +17,8 @@ class SignUpScreen extends StatefulWidget {
 int indexStepper = 0;
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  static const Color bgField = Color(0xFFE7E7E7);
-  final Color bgContainer = const Color.fromARGB(60, 136, 136, 136);
   final TextEditingController emailController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
-  static const Color yellow = Color.fromARGB(255, 255, 200, 20);
   final supabase = Supabase.instance.client;
 
   final TextEditingController passwordController = TextEditingController();

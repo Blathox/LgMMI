@@ -7,6 +7,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:loup_garou/pages/signup_screen2.dart';
 
+import '../visuals/colors.dart';
+
 final supabase = Supabase.instance.client;
 
 class LoginScreen extends StatefulWidget {
@@ -20,9 +22,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final Color bgField = const Color(0xFFE7E7E7);
-  final Color bgContainer = const Color.fromARGB(60, 136, 136, 136);
-  final Color yellow = const Color.fromARGB(255, 255, 200, 20);
   bool? isChecked = false;
 
   @override
@@ -209,15 +208,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   Navigator.pushNamed(
                     context,'/inscription');
                 },
-                child: Row(
+                child: const Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
+                    Text(
                       "Pas encore inscrit ?",
                       style: TextStyle(fontFamily: 'Poppins', fontSize: 11),
                     ),
-                    const SizedBox(
+                    SizedBox(
                         width: 4), // Add this line to create a small space
                     Text(
                       "Inscrivez vous ici",
