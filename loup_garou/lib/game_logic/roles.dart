@@ -3,8 +3,9 @@ import 'package:loup_garou/game_logic/player.dart';
 
 abstract class RoleAction {
   final String name;
+  final int order;
   final String description;
-  RoleAction({required this.name, required this.description});
+  RoleAction({required this.name, required this.description, required this.order});
 
 
   void performAction();
@@ -17,7 +18,7 @@ class LoupGarou extends RoleAction {
   List<String> availableTargets = []; 
   String? chosenTarget; 
 
-  LoupGarou({required super.name, required super.description});
+  LoupGarou({required super.name, required super.description, required super.order});
 
   @override
   void performAction() {
@@ -55,15 +56,12 @@ class LoupGarou extends RoleAction {
   }
 }
 
-class LoupBlanc extends LoupGarou {
-  LoupBlanc({required super.name, required super.description});
 
-}
 
 ////////////////////////////////////////////////////////////////
 
 class Villageois extends RoleAction {
-  Villageois({required super.name, required super.description});
+  Villageois({required super.name, required super.description, required super.order});
 
   @override
   void performAction() {
@@ -71,7 +69,7 @@ class Villageois extends RoleAction {
   }
 }
 class Sorciere extends Villageois {
-  Sorciere({required super.name, required super.description});
+  Sorciere({required super.name, required super.description, required super.order});
   
   List<Player>? get players => null;
 
@@ -103,9 +101,10 @@ class Sorciere extends Villageois {
          print("La Sorcière a éliminé $playerName.");
  }
   }
+  
 }
 class Chasseur extends Villageois {
-  Chasseur({required super.name, required super.description});
+  Chasseur({required super.name, required super.description, required super.order});
 
   @override
   void performAction() {
@@ -125,7 +124,7 @@ class Chasseur extends Villageois {
   }
 }
 class Cupidon extends Villageois {
-  Cupidon({required super.name, required super.description});
+  Cupidon({required super.name, required super.description, required super.order});
 
   @override
   void performAction() {
@@ -143,7 +142,7 @@ class Cupidon extends Villageois {
   }
 }}
 class Voyante extends Villageois {
-  Voyante({required super.name, required super.description});
+  Voyante({required super.name, required super.description, required super.order});
 
   @override
   void performAction() {
