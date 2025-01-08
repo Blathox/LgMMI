@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:loup_garou/visuals/colors.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-class GameModeCard extends StatelessWidget{
-  final String title; 
+class GameModeCard extends StatelessWidget {
+  final String title;
   final IconData icon;
   final String image1;
   final String? image2; // Image facultative
+  final String titleImg1;
+  final String? titleImg2;
 
   const GameModeCard({
+    super.key,
     required this.title,
     required this.icon,
     required this.image1,
     this.image2,
-  })
-  
+    required this.titleImg1,
+    this.titleImg2,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +26,7 @@ class GameModeCard extends StatelessWidget{
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
-      color:  yellow,
+      color: yellow,
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
@@ -32,38 +37,93 @@ class GameModeCard extends StatelessWidget{
               children: [
                 Text(
                   title,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Icon(
-                  icon, 
-                  size: 30
+                  icon,
+                  size: 30,
                 ),
-              ]
+              ],
             ),
             const SizedBox(height: 10),
-            Column (children: [
-              Expanded(
-                child:Image.asset(
-                  image1,
-                  fit: BoxFit.cover,
-                  height: 100,
+            Column(
+              children: [
+                // Premier Container avec titre superposé
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      height: 150,
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      decoration:BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: SvgPicture.asset(
+                        image1,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Text(
+                      titleImg1, // Utilisation du paramètre `titleImg1`
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 4.0,
+                            color: Colors.black54,
+                            offset: Offset(2.0, 2.0),
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-                
-              ),
-              if (image2 != null)
-              Expanded(
-                child: Image.asset(
-                  image2!,
-                  fit: BoxFit.cover,
-                  height: 100,
-                ),
-              ),
-             ],
-             ),
-          ]
+                if (image2 != null) const SizedBox(height: 10),
+                // Deuxième Container avec titre superposé (si présent)
+                if (image2 != null)
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Container(
+                        height: 150,
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        decoration:BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: SvgPicture.asset(
+                          image2!,
+                          fit: BoxFit.cover,
+                        ),
+                       
+                      ),
+                      Text(
+                        titleImg2 ?? "", // Utilisation du paramètre `titleImg2`
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          shadows: [
+                            Shadow(
+                              blurRadius: 4.0,
+                              color: Colors.black54,
+                              offset: Offset(2.0, 2.0),
+                            ),
+                          ],
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          ],
         ),
       ),
     );
-    
   }
 }
