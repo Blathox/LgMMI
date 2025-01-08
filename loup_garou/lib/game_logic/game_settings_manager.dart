@@ -6,14 +6,37 @@ class GameSettingsManager{
   int nbPlayers= 1;
    int nbWolves = 1;
   final int nbPlayersMax;
-  final int dayDuration;
-  final int nightDuration;
+  final int voteDuration;
   final List<RoleAction> roles = [];
-  GameSettingsManager(this.nbPlayersMax,this.dayDuration,this.nightDuration);
+
+  GameSettingsManager(this.nbPlayersMax,this.voteDuration);
+
+   setNbPlayers(int nb){
+    nbPlayers = nb;
+  }
+  getPlayers(){
+    return nbPlayers;
+  }
+  
+  getWolves(){
+    return nbWolves;
+  }
+ 
+  getRoles(){
+    return roles;
+  }
+  getVoteDuration(){
+    return voteDuration;
+  }
+  setRoleDuration(){
+    return voteDuration;
+  }
 
   void addPlayer(){
     nbPlayers++;
+
   }
+
   void removePlayer(){
     nbPlayers--;
   }
@@ -31,5 +54,6 @@ class GameSettingsManager{
     removeRole(LoupGarou as RoleAction);
     nbWolves--;
   }
+
 
 }
