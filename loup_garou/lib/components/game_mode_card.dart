@@ -9,6 +9,7 @@ class GameModeCard extends StatelessWidget {
   final String? image2; // Image facultative
   final String titleImg1;
   final String? titleImg2;
+  final bool redirection;
 
   const GameModeCard({
     super.key,
@@ -18,6 +19,7 @@ class GameModeCard extends StatelessWidget {
     this.image2,
     required this.titleImg1,
     this.titleImg2,
+    required this.redirection,
   });
 
   @override
@@ -85,7 +87,9 @@ class GameModeCard extends StatelessWidget {
                 if (image2 != null) const SizedBox(height: 10),
                 // Deuxième Container avec titre superposé (si présent)
                 if (image2 != null)
-                  Stack(
+                GestureDetector(
+                  onTap: () => _handleTap(context, image2!, titleImg2 ?? ""),
+                  child : Stack(
                     alignment: Alignment.center,
                     children: [
                       Container(
@@ -102,7 +106,7 @@ class GameModeCard extends StatelessWidget {
                        
                       ),
                       Text(
-                        titleImg2 ?? "", // Utilisation du paramètre `titleImg2`
+                        titleImg2 ?? "",
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -119,11 +123,45 @@ class GameModeCard extends StatelessWidget {
                       ),
                     ],
                   ),
+                )
               ],
             ),
           ],
         ),
       ),
     );
+  } 
+
+  void _handleTap(BuildContext context, String image, String title) {
+    if (redirection) {
+      // Redirection vers une autre page
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DetailPage(
+            title: title,
+            image: image,
+          ),
+        ),
+      );
+    } else {
+      // Ouvrir une pop-up
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(title),
+          content: SvgPicture.asset(image),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Fermer"),
+            ),
+          ],
+        ),
+      );
+    }
   }
+
 }
+
+
