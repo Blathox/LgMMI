@@ -1,8 +1,6 @@
 import 'dart:ui';
 import 'package:loup_garou/utils/checkAuth.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:flutter/material.dart';
 import 'package:loup_garou/pages/signup_screen2.dart';
