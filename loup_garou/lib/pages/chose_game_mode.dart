@@ -36,7 +36,8 @@ class ChoseGameMode extends StatelessWidget {
               image1: '../../assets/images/createPartyIMG.svg',
               image2: '../../assets/images/joinPartieIMG.svg',
               titleImg1: 'Rejoindre une partie privée',
-              titleImg2: 'Créer une partie privée',
+              titleImg2: 'Créer une partie privée'
+              
             ),
           ],
         ),
