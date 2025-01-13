@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loup_garou/pages/game_settings_screen.dart';
 import 'package:loup_garou/pages/home_page.dart';
 import 'package:loup_garou/pages/login_screen.dart';
+import 'package:loup_garou/pages/waiting_screen.dart';
 import 'package:loup_garou/visuals/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -37,7 +38,8 @@ class MyApp extends StatelessWidget {
         '/connexion': (context) => const LoginScreen(),
         '/home': (context) => const MainPage(),
         '/inscription': (context) => const SignUpScreen(),
-        '/settingsGame': (context) => const GameSettingsScreen(),
+        '/settingsGame': (context) =>  const GameSettingsScreen(),
+        '/waitingScreen':(context)=>const WaitingScreen()
       },
       home: const LoginScreen(),
     );

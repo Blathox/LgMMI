@@ -88,18 +88,22 @@ class GameModeCard extends StatelessWidget {
                   Stack(
                     alignment: Alignment.center,
                     children: [
-                      Container(
-                        height: 150,
-                        width: double.infinity,
-                        alignment: Alignment.center,
-                        decoration:BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/settingsGame');
+                        },
+                        child: Container(
+                          height: 150,
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: SvgPicture.asset(
+                            image2!,
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                        child: SvgPicture.asset(
-                          image2!,
-                          fit: BoxFit.cover,
-                        ),
-                       
                       ),
                       Text(
                         titleImg2 ?? "", // Utilisation du paramètre `titleImg2`

@@ -9,7 +9,7 @@ import 'phases.dart';
 class GameManager {
  
   GamePhase gamePhase = GamePhase();
-  GameSettingsManager gameSettings = GameSettingsManager(6, 300);
+  GameSettingsManager gameSettings = GameSettingsManager(6);
   List<RoleAction> roles=[];
   List<RoleAction> rolesAttribued = [];
   bool isWin = false;

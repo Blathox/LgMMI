@@ -2,27 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:loup_garou/game_logic/player.dart';
 import 'package:loup_garou/game_logic/players_manager.dart';
 
+// Classe abstraite pour tous les rôles
 abstract class RoleAction {
   final String name;
   final int order;
   final String description;
-  RoleAction({required this.name, required this.description, required this.order});
 
+  RoleAction({
+    required this.name,
+    required this.description,
+    required this.order,
+  });
 
-  void performAction(BuildContext context, PlayersManager PlayersManager);
+  void performAction(BuildContext context, PlayersManager playersManager);
+
+   
 }
 
-////////////////////////////////////////////////////////////////
-
-class LoupGarou extends RoleAction {
-
-  List<String> availableTargets = []; 
-  String? chosenTarget; 
-
-  LoupGarou({required super.name, required super.description, required super.order});
+// Classe Villageois
+class Villageois extends RoleAction {
+  Villageois({
+    required super.name,
+    required super.description,
+    required super.order,
+  });
 
   @override
-  void performAction(BuildContext context, PlayersManager gameManager) {
+  void performAction(BuildContext context, PlayersManager playersManager) {
+    print("Le Villageois participe aux votes pour éliminer un joueur.");
+  }
+}
+
+// Classe Loup-Garou
+class LoupGarou extends RoleAction {
+  List<String> availableTargets = [];
+  String? chosenTarget;
+
+  LoupGarou({
+    required super.name,
+    required super.description,
+    required super.order,
+  });
+
+  @override
+  void performAction(BuildContext context, PlayersManager playersManager) {
     if (availableTargets.isEmpty) {
       print("Aucune cible disponible pour les Loups-Garous.");
       return;
@@ -39,7 +62,7 @@ class LoupGarou extends RoleAction {
 
   void setAvailableTargets(List<String> players) {
     availableTargets = players;
-    print("Cibles disponibles pour les Loup-Garous : ${availableTargets.join(', ')}");
+    print("Cibles disponibles pour les Loups-Garous : ${availableTargets.join(', ')}");
   }
 
   void selectTarget(String targetName) {
@@ -53,46 +76,36 @@ class LoupGarou extends RoleAction {
 
   void eliminateTarget(String targetName) {
     print("$targetName a été éliminé par les Loups-Garous.");
-    // logique pour mettre à jour l'état du joueur dans le jeu.
+    // Logique pour mettre à jour l'état du joueur dans le jeu.
   }
 }
 
-
-
-////////////////////////////////////////////////////////////////
-
-class Villageois extends RoleAction {
-  Villageois({required super.name, required super.description, required super.order});
-
-  @override
-  void performAction(BuildContext context, PlayersManager gameManager) {
-    print("Le Villageois participe aux votes pour éliminer un joueur.");
-  }
-}
+// Classe Sorcière (hérite de Villageois)
 class Sorciere extends Villageois {
-  Sorciere({required super.name, required super.description, required super.order});
+  Sorciere({
+    required super.name,
+    required super.description,
+    required super.order,
+  });
 
   @override
-  void performAction(BuildContext context, PlayersManager gameManager) {
+  void performAction(BuildContext context, PlayersManager playersManager) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Action de la Sorcière"),
-          content: Text("Le joueur ${gameManager.getPlayerTargeted()} a été tué. Voulez-vous le sauver, tuer quelqu'un d'autre ou ne rien faire ?"),
+          content: Text(
+            "Le joueur ${playersManager.getPlayerTargeted()?.getName() ?? 'aucun'} a été tué. Voulez-vous le sauver, tuer quelqu'un d'autre ou ne rien faire ?",
+          ),
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                if(gameManager.getPlayerTargeted() == null){
+                Player? targetedPlayer = playersManager.getPlayerTargeted();
+                if (targetedPlayer != null) {
+                  savePlayer(targetedPlayer, playersManager);
+                } else {
                   print("Aucun joueur n'a été tué.");
-                  return;
-                }else{
-                    Player? targetedPlayer = gameManager.getPlayerTargeted();
-                    if (targetedPlayer != null) {
-                      savePlayer(targetedPlayer, gameManager);
-                    } else {
-                      print("Aucun joueur n'a été tué.");
-                    }
                 }
                 Navigator.of(context).pop();
               },
@@ -107,17 +120,15 @@ class Sorciere extends Villageois {
                     return AlertDialog(
                       title: const Text("Tuer un autre joueur"),
                       content: ListView(
-                        children:gameManager.getPlayers().map((player) {
+                        children: playersManager.getPlayers().map((player) {
                           return ListTile(
-                            
                             title: Text(player.getName()),
                             onTap: () {
-                              killPlayer(player.getName(), gameManager);
+                              killPlayer(player, playersManager);
                               Navigator.of(context).pop();
                             },
                           );
                         }).toList(),
-                       
                       ),
                     );
                   },
@@ -138,25 +149,27 @@ class Sorciere extends Villageois {
     );
   }
 
-  void savePlayer(Player player, PlayersManager gameManager) {
-      player.revive();
-      print("La Sorcière a sauvé ${player.getName()}.");
-    
+  void savePlayer(Player player, PlayersManager playersManager) {
+    player.revive();
+    print("La Sorcière a sauvé ${player.getName()}.");
   }
 
-  void killPlayer(Player player, PlayersManager gameManager) {
-
-      player.killed();
-      print("La Sorcière a éliminé ${player.getName()}.");
-    
+  void killPlayer(Player player, PlayersManager playersManager) {
+    player.killed();
+    print("La Sorcière a éliminé ${player.getName()}.");
   }
 }
+
+// Classe Chasseur (hérite de Villageois)
 class Chasseur extends Villageois {
-  Chasseur({required super.name, required super.description, required super.order});
+  Chasseur({
+    required super.name,
+    required super.description,
+    required super.order,
+  });
 
   @override
-  void performAction(
-    BuildContext context, PlayersManager gameManager) {
+  void performAction(BuildContext context, PlayersManager playersManager) {
     print("Le Chasseur peut éliminer un joueur avant de mourir.");
     showDialog(
       context: context,
@@ -164,11 +177,11 @@ class Chasseur extends Villageois {
         return AlertDialog(
           title: const Text("Chasseur"),
           content: ListView(
-            children: gameManager.getPlayers().map((player) {
+            children: playersManager.getPlayers().map((player) {
               return ListTile(
-                title: Text(player.name),
+                title: Text(player.getName()),
                 onTap: () {
-                  killPlayer(player.name, gameManager);
+                  killPlayer(player, playersManager);
                   Navigator.of(context).pop();
                 },
               );
@@ -178,27 +191,24 @@ class Chasseur extends Villageois {
       },
     );
   }
-  
 
-    void killPlayer(String playerName,PlayersManager gameManager) {
-
-    Player? player = gameManager.getPlayerByName(playerName);
-    if (player == null) {
-      print("Le joueur $playerName n'existe pas.");
-      return;
-    }
-    else{
-          player.killed();
-         print("Le chasseur a éliminé $playerName.");
- }
+  void killPlayer(Player player, PlayersManager playersManager) {
+    player.killed();
+    print("Le Chasseur a éliminé ${player.getName()}.");
   }
 }
+
+// Classe Cupidon (hérite de Villageois)
 class Cupidon extends Villageois {
-  Cupidon({required super.name, required super.description, required super.order});
+  Cupidon({
+    required super.name,
+    required super.description,
+    required super.order,
+  });
 
   @override
-  void performAction(BuildContext context, PlayersManager gameManager) {
-    print("Vous êtes cupidon et votre mission est de relier deux personnes par les liens de l'amour. Qui choisissez vous ?");
+  void performAction(BuildContext context, PlayersManager playersManager) {
+    print("Cupidon relie deux joueurs par les liens de l'amour.");
     List<String> playersSelected = [];
     showDialog(
       context: context,
@@ -206,17 +216,15 @@ class Cupidon extends Villageois {
         return AlertDialog(
           title: const Text("Cupidon"),
           content: ListView(
-            children: gameManager.getPlayers().map((player) {
+            children: playersManager.getPlayers().map((player) {
               return ListTile(
-                title: Text(player.name),
+                title: Text(player.getName()),
                 onTap: () {
-                  playersSelected.add(player.name);
+                  playersSelected.add(player.getName());
                   if (playersSelected.length == 2) {
-                    linkPlayers(playersSelected[0], playersSelected[1], gameManager);
+                    linkPlayers(playersSelected[0], playersSelected[1], playersManager);
                     Navigator.of(context).pop();
                   }
-                  
-              
                 },
               );
             }).toList(),
@@ -225,37 +233,42 @@ class Cupidon extends Villageois {
       },
     );
   }
-  void linkPlayers(String player1, String player2, PlayersManager gameManager) {
-  Player? p1 = gameManager.getPlayerByName(player1);
-  Player? p2 = gameManager.getPlayerByName(player2);
-  if (p1 == null || p2 == null) {
-    print("Les joueurs $player1 et $player2 doivent être présents dans la partie.");
-    return;
-  } else {
-    gameManager.addPlayerLinked(p1, p2);
+
+  void linkPlayers(String player1, String player2, PlayersManager playersManager) {
+    Player? p1 = playersManager.getPlayerByName(player1);
+    Player? p2 = playersManager.getPlayerByName(player2);
+    if (p1 == null || p2 == null) {
+      print("Les joueurs $player1 et $player2 doivent être présents dans la partie.");
+      return;
+    }
+    playersManager.addPlayerLinked(p1, p2);
     print("Vous avez lié $player1 et $player2.");
   }
-}}
+}
+
+// Classe Voyante (hérite de Villageois)
 class Voyante extends Villageois {
-  Voyante({required super.name, required super.description, required super.order});
+  Voyante({
+    required super.name,
+    required super.description,
+    required super.order,
+  });
 
   @override
-  void performAction(BuildContext context, PlayersManager gameManager) {
+  void performAction(BuildContext context, PlayersManager playersManager) {
     print("La Voyante peut voir le rôle d'un joueur.");
-       showDialog(
+    showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Voyante"),
           content: ListView(
-            children: gameManager.getPlayers().map((player) {
+            children: playersManager.getPlayers().map((player) {
               return ListTile(
-                title: Text(player.name),
+                title: Text(player.getName()),
                 onTap: () {
-                  seeRole(player.name, gameManager);
+                  seeRole(player.getName(), playersManager);
                   Navigator.of(context).pop();
-                  
-              
                 },
               );
             }).toList(),
@@ -264,13 +277,13 @@ class Voyante extends Villageois {
       },
     );
   }
-  void seeRole(String playerName, PlayersManager gameManager) {
-  Player? player = gameManager.getPlayerByName(playerName);
-  if (player == null) {
-    print("Le joueur $playerName n'existe pas.");
-    return;
-  } else {
+
+  void seeRole(String playerName, PlayersManager playersManager) {
+    Player? player = playersManager.getPlayerByName(playerName);
+    if (player == null) {
+      print("Le joueur $playerName n'existe pas.");
+      return;
+    }
     print("Le rôle de $playerName est : ${player.role}");
   }
-}
 }
