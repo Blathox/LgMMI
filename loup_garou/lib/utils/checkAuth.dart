@@ -1,5 +1,4 @@
 // Automatic FlutterFlow imports
-import 'package:flutter/material.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -15,9 +14,7 @@ Future<bool> checkAuth() async {
 
   if(supabase.auth.currentUser?.id!=null ){
     final idUser = supabase.auth.currentUser?.id??'';
-    print(idUser);
    final stats = await supabase.from('STATISTICS').select().eq('id_user',idUser);
-  print(stats);
     if(stats.isEmpty){
        await supabase.from('STATISTICS').insert({
       'games_played': 0,

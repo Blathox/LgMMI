@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loup_garou/components/game_mode_card.dart';
 import 'package:loup_garou/visuals/colors.dart';
+
 class ChoseGameMode extends StatelessWidget {
   const ChoseGameMode({super.key});
 
@@ -17,10 +18,26 @@ class ChoseGameMode extends StatelessWidget {
           children: const [
             // Mode de jeu n°1 : Partie Rapide
             GameModeCard(
-              title: 'Partie Rapide',
+              title: 'Mode Rapide',
               icon: Icons.settings,
+              image1: '../../assets/images/joinPartieIMG.svg',
+              titleImg1: 'Rejoindre une partie rapide',
+            ),
+            // Mode de jeu n°2 : Partie Classique
+            GameModeCard(
+                title: 'Mode Classique',
+                icon: Icons.settings,
+                image1: '../../assets/images/joinPartieIMG.svg',
+                titleImg1: 'Rejoindre une partie Classique'),
+            // Mode de jeu n°2 : Partie Classique
+            GameModeCard(
+              title: 'Partie privée',
+              icon: Icons.settings,
+              image1: '../../assets/images/createPartyIMG.svg',
+              image2: '../../assets/images/joinPartieIMG.svg',
+              titleImg1: 'Rejoindre une partie privée',
+              titleImg2: 'Créer une partie privée'
               
-
             ),
           ],
         ),
