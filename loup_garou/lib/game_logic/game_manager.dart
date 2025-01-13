@@ -14,8 +14,12 @@ class GameManager {
   GameSettingsManager gameSettings = GameSettingsManager(6);
   List<RoleAction> roles=[];
   List<RoleAction> rolesAttribued = [];
+  List<Player> players = [];
+  List<Player> alivePlayers = [];
+  List<Player> deadPlayers = [];
+  List<Player> loversPlayers = [];
   bool isWin = false;
-    PlayersManager playersM = PlayersManager();
+  PlayersManager playersM = PlayersManager();
 
   GameManager(this.gameSettings) {
     roles = gameSettings.roles;
@@ -48,12 +52,6 @@ class GameManager {
     }
 
   }
-
-  
- 
-
-
-
   
   Future<List<Map<String, dynamic>>> fetchKilledPlayers() async {
   try {
@@ -72,9 +70,6 @@ class GameManager {
     return [];
   }
 }
-
-
-
 
   void processNightActions(BuildContext context) {
     // Gérer les actions des rôles la nuit
