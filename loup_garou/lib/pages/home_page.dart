@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loup_garou/visuals/colors.dart';
 import 'chose_game_mode.dart';
+import 'settings_page.dart';
 
 
 class MainPage extends StatelessWidget {
@@ -21,9 +22,9 @@ class MainPage extends StatelessWidget {
                 
                 onPressed: () {
                   Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ChoseGameMode()),
-            );
+                    context,
+                    MaterialPageRoute(builder: (context) => ChoseGameMode()),
+                  );
                 },
                 
                 style: ElevatedButton.styleFrom(
@@ -105,7 +106,12 @@ class MainPage extends StatelessWidget {
         child: SizedBox(
           height: 45, // Définir la hauteur ici
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingsPage()),
+              );
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.orange,
               shape: RoundedRectangleBorder(

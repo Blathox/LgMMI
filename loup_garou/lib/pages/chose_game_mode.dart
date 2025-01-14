@@ -15,24 +15,7 @@ class ChoseGameMode extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: ListView(
-          children: const [
-            // Mode de jeu n°1 : Partie Rapide
-            GameModeCard(
-              title: 'Mode Rapide',
-              icon: Icons.settings,
-              image1: '../../assets/images/joinPartieIMG.svg',
-              titleImg1: 'Rejoindre une partie rapide',
-              redirectionImage1: true,
-            ),
-            // Mode de jeu n°2 : Partie Classique
-            GameModeCard(
-                title: 'Mode Classique',
-                icon: Icons.settings,
-                image1: '../../assets/images/joinPartieIMG.svg',
-                titleImg1: 'Rejoindre une partie Classique',
-                redirectionImage1: true,
-                ),
-                
+          children: const [ 
             // Mode de jeu n°2 : Partie Classique
             GameModeCard(
               title: 'Partie privée',
@@ -41,8 +24,8 @@ class ChoseGameMode extends StatelessWidget {
               image2: '../../assets/images/joinPartieIMG.svg',
               titleImg1: 'Rejoindre une partie privée',
               titleImg2: 'Créer une partie privée',
-              redirectionImage1: true,
-              redirectionImage2: false,
+              redirectionImage1: false,
+              redirectionImage2: true,
               
             ),
           ],

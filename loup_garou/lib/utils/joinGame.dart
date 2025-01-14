@@ -12,5 +12,4 @@ Future<void> joinGame(
 
   sm.showSnackBar(
       SnackBar(content: Text("Partie rejointe avec le code $code")));
-  
 }

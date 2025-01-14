@@ -153,19 +153,73 @@ class GameModeCard extends StatelessWidget {
       );
     } else {
       // Ouvrir une pop-up
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(title),
-          content: SvgPicture.asset(image),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Fermer"),
-            ),
-          ],
-        ),
-      );
+      _showGameCodeDialog(context);
     }
   }
 }
+class UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    return TextEditingValue(
+      text: newValue.text.toUpperCase(),
+      selection: newValue.selection,
+    );
+  }
+}
+
+void _showGameCodeDialog(BuildContext context) {
+    final TextEditingController codeController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Entrer le code de la partie"),
+          content: TextField(
+            controller: codeController,
+            inputFormatters: [
+            UpperCaseTextFormatter(), // Forcer les majuscules
+            ],
+            decoration: const InputDecoration(
+              labelText: "Code de la partie",
+              hintText: "Ex: ABC123",
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Fermer le dialogue
+              },
+              child: const Text("Annuler"),
+            ),
+            TextButton(
+              onPressed: () {
+                final gameCode = codeController.text.trim();
+
+                if (gameCode.isNotEmpty) {
+                  Navigator.of(context).pop(); // Fermer le dialogue
+      
+                  // Rediriger vers la page correspondante avec le code de la partie
+                  Navigator.pushNamed(
+                    context,
+                    '/gameScreen',
+                    arguments: {'gameCode': gameCode},
+                  );
+                } else {
+                  // Afficher un message d'erreur si le code est vide
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Veuillez entrer un code valide."),
+                    ),
+                  );
+                }
+              },
+              child: const Text("Rejoindre"),
+            ),
+          ],
+        );
+      },
+    );
+  }
