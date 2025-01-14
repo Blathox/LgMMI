@@ -22,13 +22,17 @@ class ChoseGameMode extends StatelessWidget {
               icon: Icons.settings,
               image1: '../../assets/images/joinPartieIMG.svg',
               titleImg1: 'Rejoindre une partie rapide',
+              redirectionImage1: true,
             ),
             // Mode de jeu n°2 : Partie Classique
             GameModeCard(
                 title: 'Mode Classique',
                 icon: Icons.settings,
                 image1: '../../assets/images/joinPartieIMG.svg',
-                titleImg1: 'Rejoindre une partie Classique'),
+                titleImg1: 'Rejoindre une partie Classique',
+                redirectionImage1: true,
+                ),
+                
             // Mode de jeu n°2 : Partie Classique
             GameModeCard(
               title: 'Partie privée',
@@ -36,7 +40,9 @@ class ChoseGameMode extends StatelessWidget {
               image1: '../../assets/images/createPartyIMG.svg',
               image2: '../../assets/images/joinPartieIMG.svg',
               titleImg1: 'Rejoindre une partie privée',
-              titleImg2: 'Créer une partie privée'
+              titleImg2: 'Créer une partie privée',
+              redirectionImage1: true,
+              redirectionImage2: false,
               
             ),
           ],
