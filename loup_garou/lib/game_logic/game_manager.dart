@@ -93,25 +93,33 @@ class GameManager {
   Future<void> processDayActions(BuildContext context, String gameId) async {
     print("Le village se réveille...");
 
-    // Étape 1 : Annonce des joueurs tués
-    List<Map<String, dynamic>> killedPlayers = await fetchKilledPlayers();
-    if (killedPlayers.isEmpty) {
-      print("Aucun joueur n'a été tué cette nuit.");
-    } else {
-      for (var player in killedPlayers) {
-        print("${player['name']} a été tué cette nuit. Son rôle était : ${player['role']}");
-        deadPlayers.add(Player(player['name'], player['role'], false));
-      }
-    }
+    // Annonce des joueurs tués
+    Future<List<Map<String, dynamic>>> fetchKilledPlayers() async {
+  try {
+    final response = await supabase
+        .from('PLAYERS')
+        .select('id, name, role')
+        .eq('killedAtNight', true);
 
-    // Étape 2 : Lancer la phase de discussion avec le chat
+    if (response.isEmpty) {
+      return [];
+    }
+    return List<Map<String, dynamic>>.from(response);
+  } catch (error) {
+    print("Erreur lors de la récupération des joueurs tués : $error");
+    return [];
+  }
+}
+    
+
+    // Phase de discussion avec le chat
     openChatScreen(context, gameId);
 
-    // Étape 3 : Récupérer la durée de vote
+    // Récupérer la durée de vote
     int voteDuration = await fetchVoteDuration(gameId);
     print("Durée de la phase de vote : $voteDuration secondes.");
 
-    // Étape 4 : Attendre la fin de la durée configurée
+    // Attendre la fin de la durée configurée
     await Future.delayed(Duration(seconds: voteDuration));
     print("Fin de la phase de vote.");
 

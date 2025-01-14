@@ -1,58 +1,78 @@
 import 'package:loup_garou/game_logic/roles.dart';
 
 class Player {
+  String id; // Identifiant unique du joueur
+  String name; // Nom du joueur
+  RoleAction role; // Rôle attribué au joueur
+  bool isAlive; // Indique si le joueur est vivant
+  int voteCount = 0; // Nombre de votes reçus
+  bool isLinked = false; // Indique si le joueur est lié à un autre joueur (amoureux, par exemple)
+  bool isTargeted = false; // Indique si le joueur est ciblé
 
-  String name;
-  RoleAction role;
-  bool isAlive;
-  int voteCount = 0;
-  bool isLinked = false;
-  bool isTargeted = false;
-  Player(this.name, this.role, this.isAlive);
+  // Constructeur avec tous les paramètres requis
+  Player({
+    required this.id,
+    required this.name,
+    required this.role,
+    this.isAlive = true, // Par défaut, le joueur est vivant
+  });
 
+  // Méthodes pour gérer l'état du joueur
   void killed() {
     isAlive = false;
+    print('$name a été tué.');
   }
 
   void revive() {
     isAlive = true;
+    print('$name a été réanimé.');
   }
+
   void vote(Player player) {
     player.addVote();
-    print('$name voted for ${player.name}');
+    print('$name a voté contre ${player.name}.');
   }
 
   void resetVote() {
     voteCount = 0;
   }
+
   void addVote() {
     voteCount++;
   }
+
   void removeVote() {
-    voteCount--;
+    if (voteCount > 0) {
+      voteCount--;
+    }
   }
-  setRole(RoleAction role) {
+
+  void setRole(RoleAction role) {
     this.role = role;
   }
-  getRole(){
+
+  RoleAction getRole() {
     return role;
   }
-  getIsAlive(){
+
+  bool getIsAlive() {
     return isAlive;
   }
-  getIsTargeted(){
+
+  bool getIsTargeted() {
     return isTargeted;
   }
-  setIsTargeted(bool value){
+
+  void setIsTargeted(bool value) {
     isTargeted = value;
   }
-  getName(){
+
+  String getName() {
     return name;
   }
- 
 
   @override
   String toString() {
-    return 'Player{name: $name, role: $role, isAlive: $isAlive}';
+    return 'Player{id: $id, name: $name, role: ${role.name}, isAlive: $isAlive}';
   }
 }
