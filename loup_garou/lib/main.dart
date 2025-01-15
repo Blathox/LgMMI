@@ -5,7 +5,7 @@ import 'package:loup_garou/pages/login_screen.dart';
 import 'package:loup_garou/pages/waiting_screen.dart';
 import 'package:loup_garou/visuals/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
+import 'package:loup_garou/pages/settings_page.dart';
 import 'package:loup_garou/pages/signup_screen2.dart';
 
 Future<void> main() async {
@@ -39,7 +39,8 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const MainPage(),
         '/inscription': (context) => const SignUpScreen(),
         '/settingsGame': (context) =>  const GameSettingsScreen(),
-        '/waitingScreen':(context)=>const WaitingScreen()
+        '/waitingScreen':(context)=>const WaitingScreen(),
+        '/globalSettings':(context)=>const SettingsPage(),
       },
       home: const LoginScreen(),
     );

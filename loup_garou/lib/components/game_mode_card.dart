@@ -11,6 +11,8 @@ class GameModeCard extends StatelessWidget {
   final String? image2; // Image facultative
   final String titleImg1;
   final String? titleImg2;
+  final bool redirectionImage1; // Détermine si image1 redirige
+  final bool? redirectionImage2; // Détermine si image2 redirige
 
   const GameModeCard({
     super.key,
@@ -20,6 +22,8 @@ class GameModeCard extends StatelessWidget {
     this.image2,
     required this.titleImg1,
     this.titleImg2,
+    required this.redirectionImage1,
+    this.redirectionImage2,
   });
 
   @override
@@ -51,12 +55,10 @@ class GameModeCard extends StatelessWidget {
             const SizedBox(height: 10),
             Column(
               children: [
+                // Premier Container avec titre superposé
                 GestureDetector(
-                  // onTap: () => _handleTap(context, image2!, titleImg2 ?? ""),
-                  onTap: () => _showGameCodeDialog(context),
-                  child:
-                      // Premier Container avec titre superposé
-                      Stack(
+                  onTap: () => _handleTap(context, image1, titleImg1, redirectionImage1),
+                  child: Stack(
                     alignment: Alignment.center,
                     children: [
                       Container(
@@ -94,10 +96,12 @@ class GameModeCard extends StatelessWidget {
                 // Deuxième Container avec titre superposé (si présent)
                 if (image2 != null)
                   GestureDetector(
-                    // onTap: () => _handleTap(context, image2!, titleImg2 ?? ""),
-                    onTap: () {
-                      Navigator.pushNamed(context, '/settingsGame');
-                    },
+                    onTap: () => _handleTap(
+                      context,
+                      image2!,
+                      titleImg2 ?? "",
+                      redirectionImage2 ?? false,
+                    ),
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
@@ -131,7 +135,7 @@ class GameModeCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                  )
+                  ),
               ],
             ),
           ],
@@ -140,37 +144,19 @@ class GameModeCard extends StatelessWidget {
     );
   }
 
-//   void _handleTap(BuildContext context, String image, String title) {
-//     if (redirection) {
-//       // Redirection vers une autre page
-//       Navigator.push(
-//         context,
-//         MaterialPageRoute(
-//           builder: (context) => DetailPage(
-//             title: title,
-//             image: image,
-//           ),
-//         ),
-//       );
-//     } else {
-//       // Ouvrir une pop-up
-//       showDialog(
-//         context: context,
-//         builder: (context) => AlertDialog(
-//           title: Text(title),
-//           content: SvgPicture.asset(image),
-//           actions: [
-//             TextButton(
-//               onPressed: () => Navigator.pop(context),
-//               child: const Text("Fermer"),
-//             ),
-//           ],
-//         ),
-//       );
-//     }
-//   }
-
-// }
+  void _handleTap(BuildContext context, String image, String title, bool redirect) {
+    if (redirect) {
+      // Redirection vers une autre page avec le titre comme argument GameMode
+      Navigator.pushNamed(
+        context,
+        '/settingsGame',
+        arguments: title,
+      );
+    } else {
+      // Ouvrir une pop-up
+      _showGameCodeDialog(context);
+    }
+  }
 }
 
 class UpperCaseTextFormatter extends TextInputFormatter {
@@ -178,7 +164,7 @@ class UpperCaseTextFormatter extends TextInputFormatter {
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
     return TextEditingValue(
-      text: newValue.text.toUpperCase(), // Convertir tout en majuscules
+      text: newValue.text.toUpperCase(),
       selection: newValue.selection,
     );
   }
