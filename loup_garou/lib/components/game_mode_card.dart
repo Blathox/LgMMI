@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:loup_garou/utils/joinGame.dart';
 import 'package:loup_garou/visuals/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -171,6 +172,7 @@ class GameModeCard extends StatelessWidget {
 
 // }
 }
+
 class UpperCaseTextFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -181,45 +183,49 @@ class UpperCaseTextFormatter extends TextInputFormatter {
     );
   }
 }
+
 void _showGameCodeDialog(BuildContext context) {
-    final TextEditingController codeController = TextEditingController();
+  final TextEditingController codeController = TextEditingController();
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Entrer le code de la partie"),
-          content: TextField(
-            controller: codeController,
-            inputFormatters: [
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text("Entrer le code de la partie"),
+        content: TextField(
+          controller: codeController,
+          inputFormatters: [
             UpperCaseTextFormatter(), // Forcer les majuscules
-            ],
-            decoration: const InputDecoration(
-              labelText: "Code de la partie",
-              hintText: "Ex: ABC123",
-              border: OutlineInputBorder(),
-            ),
+          ],
+          decoration: const InputDecoration(
+            labelText: "Code de la partie",
+            hintText: "Ex: ABC123",
+            border: OutlineInputBorder(),
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Fermer le dialogue
-              },
-              child: const Text("Annuler"),
-            ),
-            TextButton(
-              onPressed: () {
-                final gameCode = codeController.text.trim();
-
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Fermer le dialogue
+            },
+            child: const Text("Annuler"),
+          ),
+          TextButton(
+            onPressed: () async {
+              final gameCode = codeController.text.trim();
+              try {
+                await joinGame(context, gameCode);
+                Navigator.pushNamed(
+                  // ignore: use_build_context_synchronously
+                  context,
+                  '/waitingScreen',
+                  arguments: {'gameCode': gameCode},
+                );
+              } catch (e) {
                 if (gameCode.isNotEmpty) {
                   Navigator.of(context).pop(); // Fermer le dialogue
-      
+
                   // Rediriger vers la page correspondante avec le code de la partie
-                  Navigator.pushNamed(
-                    context,
-                    '/gameScreen',
-                    arguments: {'gameCode': gameCode},
-                  );
                 } else {
                   // Afficher un message d'erreur si le code est vide
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -228,11 +234,12 @@ void _showGameCodeDialog(BuildContext context) {
                     ),
                   );
                 }
-              },
-              child: const Text("Rejoindre"),
-            ),
-          ],
-        );
-      },
-    );
-  }
+              }
+            },
+            child: const Text("Rejoindre"),
+          ),
+        ],
+      );
+    },
+  );
+}

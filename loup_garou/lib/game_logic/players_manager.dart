@@ -8,8 +8,11 @@ class PlayersManager {
 
   List<Player>
 
-getPlayers() {
+get playerList {
     return players;
+  }
+set playerList(List<Player> players) {
+    this.players = players;
   }
   List<Player> getAlivePlayers() {
     return alivePlayers;
@@ -20,6 +23,7 @@ getPlayers() {
     players.add(player);
 
   }
+
   void removePlayer(Player player) {
     players.remove(player);
   }

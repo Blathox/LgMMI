@@ -120,7 +120,7 @@ class Sorciere extends Villageois {
                     return AlertDialog(
                       title: const Text("Tuer un autre joueur"),
                       content: ListView(
-                        children: playersManager.getPlayers().map((player) {
+                        children: playersManager.playerList.map((player) {
                           return ListTile(
                             title: Text(player.getName()),
                             onTap: () {
@@ -177,7 +177,7 @@ class Chasseur extends Villageois {
         return AlertDialog(
           title: const Text("Chasseur"),
           content: ListView(
-            children: playersManager.getPlayers().map((player) {
+            children: playersManager.playerList.map((player) {
               return ListTile(
                 title: Text(player.getName()),
                 onTap: () {
@@ -216,7 +216,7 @@ class Cupidon extends Villageois {
         return AlertDialog(
           title: const Text("Cupidon"),
           content: ListView(
-            children: playersManager.getPlayers().map((player) {
+            children: playersManager.playerList.map((player) {
               return ListTile(
                 title: Text(player.getName()),
                 onTap: () {
@@ -263,7 +263,7 @@ class Voyante extends Villageois {
         return AlertDialog(
           title: const Text("Voyante"),
           content: ListView(
-            children: playersManager.getPlayers().map((player) {
+            children: playersManager.playerList.map((player) {
               return ListTile(
                 title: Text(player.getName()),
                 onTap: () {

@@ -1,6 +1,3 @@
-// Automatic FlutterFlow imports
-
-import 'dart:ffi';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 

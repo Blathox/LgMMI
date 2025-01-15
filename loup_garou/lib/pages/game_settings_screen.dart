@@ -4,6 +4,7 @@ import 'package:loup_garou/game_logic/game_settings_manager.dart';
 import 'package:loup_garou/game_logic/roles.dart';
 import 'package:loup_garou/utils/createGame.dart';
 import 'package:loup_garou/visuals/colors.dart';
+import 'package:random_string/random_string.dart';
 
 class GameSettingsScreen extends StatefulWidget {
   const GameSettingsScreen({super.key});
@@ -47,8 +48,7 @@ class _GameSettingsScreenState extends State<GameSettingsScreen> {
               Counter(
                   valueCounter: gameSettings.voteDurations.toString(),
                   addCounter: () => setState(() => gameSettings.addTime()),
-                  removeCount: () =>
-                      setState(() => gameSettings.removeTime()))
+                  removeCount: () => setState(() => gameSettings.removeTime()))
             ]),
             Text('Choisissez les rôles de la partie',
                 style: Theme.of(context).textTheme.titleLarge),
@@ -118,8 +118,10 @@ class _GameSettingsScreenState extends State<GameSettingsScreen> {
                                         gameSettings.nbWolves.toString(),
                                     addCounter: () {
                                       setState(() {
-                                        print(gameSettings.getRoleCount('villageois'));
-                                        if (gameSettings.getRoleCount('villageois') >
+                                        print(gameSettings
+                                            .getRoleCount('villageois'));
+                                        if (gameSettings
+                                                .getRoleCount('villageois') >
                                             0) {
                                           gameSettings.addWolf();
                                         }
@@ -142,7 +144,11 @@ class _GameSettingsScreenState extends State<GameSettingsScreen> {
                                       .toString(),
                                   addCounter: () {
                                     setState(() {
-                                      if (gameSettings.getRoleCount(role.name) < 1 && gameSettings.getRoleCount("villageois")>1) {
+                                      if (gameSettings.getRoleCount(role.name) <
+                                              1 &&
+                                          gameSettings
+                                                  .getRoleCount("villageois") >
+                                              1) {
                                         gameSettings.addRole(role);
                                         gameSettings.villagers--;
                                       }
@@ -150,7 +156,8 @@ class _GameSettingsScreenState extends State<GameSettingsScreen> {
                                   },
                                   removeCount: () {
                                     setState(() {
-                                      if (gameSettings.getRoleCount(role.name) > 0) {
+                                      if (gameSettings.getRoleCount(role.name) >
+                                          0) {
                                         gameSettings.removeRole(role);
                                         gameSettings.villagers++;
                                       }
@@ -165,19 +172,33 @@ class _GameSettingsScreenState extends State<GameSettingsScreen> {
                 },
               ),
             ),
-            TextButton(onPressed: (){
-                                  final sm = ScaffoldMessenger.of(context);
+            TextButton(
+                onPressed: () {
+                  final sm = ScaffoldMessenger.of(context);
 
-              try {
-                       createGame(context,{'loups': gameSettings.wolves,'villageois': gameSettings.villagers,'nbJoueurs': gameSettings.players,'voteDuration': gameSettings.voteDuration, 'rolesSelected': gameSettings.rolesSelected});
-                        // ignore: use_build_context_synchronously
-              Navigator.pushNamed(context, '/waitingScreen');
-                      } catch (e) {
-                        sm.showSnackBar(SnackBar(
-                            content: Text("Erreur lors de la création de la partie: $e")));
-                      }
-              
-              }, child: const Text('Créer une partie'))
+                  try {
+                    final String codeGame = randomAlphaNumeric(6).toUpperCase();
+
+                    createGame(
+                        context,
+                        {
+                          'loups': gameSettings.wolves,
+                          'villageois': gameSettings.villagers,
+                          'nbJoueurs': gameSettings.players,
+                          'voteDuration': gameSettings.voteDuration,
+                          'rolesSelected': gameSettings.rolesSelected
+                        },
+                        codeGame);
+                    // ignore: use_build_context_synchronously
+                    Navigator.pushNamed(context, '/waitingScreen',
+                        arguments: {'gameCode': codeGame});
+                  } catch (e) {
+                    sm.showSnackBar(SnackBar(
+                        content: Text(
+                            "Erreur lors de la création de la partie: $e")));
+                  }
+                },
+                child: const Text('Créer une partie'))
           ],
         ),
       ),

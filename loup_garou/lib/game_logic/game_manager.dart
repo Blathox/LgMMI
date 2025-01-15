@@ -26,9 +26,9 @@ class GameManager {
     // Distribuer les rôles aux joueurs
     print("Attribution des rôles");
     roles.shuffle();
-    for (int i = 0; i < playersM.getPlayers().length; i++) {
+    for (int i = 0; i < playersM.playerList.length; i++) {
 
-      playersM.getPlayers()[i].setRole(roles[i]);
+      playersM.playerList[i].setRole(roles[i]);
       rolesAttribued.add(roles[i]);
       roles.remove(roles[i]);
     }

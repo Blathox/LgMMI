@@ -1,18 +1,23 @@
-import 'dart:ui_web';
+
+// ignore_for_file: await_only_futures
 
 import 'package:flutter/material.dart';
+import 'package:loup_garou/game_logic/player.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../game_logic/player.dart';
-
-Future<List<Player>> getPlayers( BuildContext context, code) async {
+ Future <void> getPlayers( BuildContext context, code, playerManager) async {
  final supabase = Supabase.instance.client;
-  final sm = ScaffoldMessenger.of(context);
-    var response = await supabase.from('GAMES').select('users').eq('game_code', code).single();
-    // ignore: unused_local_variable
-    for (String player in (response['users'] as List<dynamic>)){
-          var user= await supabase.from('USERS').select().eq('id', )
+
+ var response = await supabase.from("GAMES").select('users').eq('game_code', code).single();  
+  List<dynamic> listUsers = response['users'];  
+    print(response);
+
+    for (String player in listUsers) {
+          var userResponse = await supabase.from('USERS').select().eq('id', player).single();
+          print(userResponse);
+          var user = userResponse;
+          String username = user['username'] as String;
+          playerManager.addPlayer(Player(username,false));     
     }
 
-return response
 }
