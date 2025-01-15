@@ -38,7 +38,6 @@ Future<void> joinGame(BuildContext context, String code) async {
     }
 
     final userId = userResponse['id'];
-print(userId);
     // Vérifie si l'utilisateur est déjà dans la liste
     if (existingUsers.contains(userId)) {
       sm.showSnackBar(
@@ -68,6 +67,5 @@ print(userId);
     sm.showSnackBar(
       SnackBar(content: Text("Erreur inattendue : $e")),
     );
-    print(e);
   }
 }
