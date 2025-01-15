@@ -14,44 +14,56 @@ class Player {
 
   void killed() {
     isAlive = false;
+    print('$name a été tué.');
   }
 
   void revive() {
     isAlive = true;
+    print('$name a été réanimé.');
   }
+
   void vote(Player player) {
     player.addVote();
-    print('$name voted for ${player.name}');
+    print('$name a voté contre ${player.name}.');
   }
 
   void resetVote() {
     voteCount = 0;
   }
+
   void addVote() {
     voteCount++;
   }
+
   void removeVote() {
-    voteCount--;
+    if (voteCount > 0) {
+      voteCount--;
+    }
   }
-  setRole(RoleAction role) {
+
+  void setRole(RoleAction role) {
     this.role = role;
   }
-  getRole(){
+
+  RoleAction getRole() {
     return role;
   }
-  getIsAlive(){
+
+  bool getIsAlive() {
     return isAlive;
   }
-  getIsTargeted(){
+
+  bool getIsTargeted() {
     return isTargeted;
   }
-  setIsTargeted(bool value){
+
+  void setIsTargeted(bool value) {
     isTargeted = value;
   }
-  getName(){
+
+  String getName() {
     return name;
   }
- 
 
   @override
   String toString() {
