@@ -37,10 +37,8 @@ class GameManager {
     }
     rolesAttribued.sort((a, b) => a.order.compareTo(b.order));
 
-    // Définir le premier tour de jeu
     gamePhase.currentPhase = Phase.Night;
 
-    // Commencer la première phase
     await processNightActions(context);
     await processDayActions(context, gameId);
   }
@@ -110,8 +108,7 @@ class GameManager {
     return [];
   }
 }
-    
-
+  
     // Phase de discussion avec le chat
     openChatScreen(context, gameId);
 
