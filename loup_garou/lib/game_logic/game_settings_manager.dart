@@ -40,7 +40,7 @@ class GameSettingsManager {
     ),
   ];
   late List<RoleAction> rolesSelected;
-  
+  String codeGame= '';
   LoupGarou loupGarou = LoupGarou(
     name: 'Loup-Garou',
     description: 'Un loup-garou qui attaque les villageois.',
@@ -85,7 +85,10 @@ class GameSettingsManager {
   int get villagers {
     return nbVillagers;
   }
-
+  set code(String codeGame){
+    this.codeGame= codeGame;
+  }
+  
   set villagers(int nb) {
     nbVillagers = nb;
   }

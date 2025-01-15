@@ -1,23 +1,17 @@
 import 'package:loup_garou/game_logic/roles.dart';
 
 class Player {
-  String id; // Identifiant unique du joueur
-  String name; // Nom du joueur
-  RoleAction role; // Rôle attribué au joueur
-  bool isAlive; // Indique si le joueur est vivant
-  int voteCount = 0; // Nombre de votes reçus
-  bool isLinked = false; // Indique si le joueur est lié à un autre joueur (amoureux, par exemple)
-  bool isTargeted = false; // Indique si le joueur est ciblé
 
-  // Constructeur avec tous les paramètres requis
-  Player({
-    required this.id,
-    required this.name,
-    required this.role,
-    this.isAlive = true, // Par défaut, le joueur est vivant
-  });
+  String name;
+  late RoleAction role;
+  bool isAlive;
+  int voteCount = 0;
+  bool isLinked = false;
+  bool isTargeted = false;
+  Player(this.name, this.isAlive){
+    role = Villageois(description: '', name: '', order: 0);
+  }
 
-  // Méthodes pour gérer l'état du joueur
   void killed() {
     isAlive = false;
     print('$name a été tué.');
@@ -73,6 +67,6 @@ class Player {
 
   @override
   String toString() {
-    return 'Player{id: $id, name: $name, role: ${role.name}, isAlive: $isAlive}';
+    return 'Player{name: $name, isAlive: $isAlive}';
   }
 }

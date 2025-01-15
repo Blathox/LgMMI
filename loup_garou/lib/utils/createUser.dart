@@ -12,6 +12,7 @@ Future<void> createUser(
   final authResponse = await supabase.auth
       .signUp(password: password, email: email, data: {'username': pseudo});
 
+
   sm.showSnackBar(
       SnackBar(content: Text("Logged in: ${authResponse.user?.email}")));
   

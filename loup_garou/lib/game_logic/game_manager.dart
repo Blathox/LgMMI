@@ -30,8 +30,9 @@ class GameManager {
   void startGame(BuildContext context, String gameId) async {
     print("Attribution des rôles");
     roles.shuffle();
-    for (int i = 0; i < playersM.getPlayers().length; i++) {
-      playersM.getPlayers()[i].setRole(roles[i]);
+    for (int i = 0; i < playersM.playerList.length; i++) {
+
+      playersM.playerList[i].setRole(roles[i]);
       rolesAttribued.add(roles[i]);
       roles.remove(roles[i]);
     }
