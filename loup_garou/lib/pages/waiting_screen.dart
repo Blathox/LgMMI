@@ -54,12 +54,13 @@ class _WaitingScreenState extends State<WaitingScreen> {
     });
 
     try {
+      print(gameCode);
       final response = await Supabase.instance.client
           .from('GAMES')
           .select('users')
           .eq('game_code', gameCode)
           .single();
-
+print('test');
 if (response['users'] != null) {
 
   final List<String> playerIds = List<String>.from(
@@ -73,6 +74,7 @@ if (response['users'] != null) {
           .from('USERS')
           .select()
           .eq('id', playerIds[i]).single();
+          
       if (playersManager.getPlayerByName(usersResponse['username'])==null) {
         
         final String username = usersResponse['username'] as String;

@@ -20,7 +20,6 @@ Future<void> joinGame(BuildContext context, String code) async {
       return;
     }
 
-    final gameId = gameResponse['id'];
     final existingUsers = gameResponse['users'] as List<dynamic>? ?? [];
 
     // Vérifie l'utilisateur actuel
