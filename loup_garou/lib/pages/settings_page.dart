@@ -7,28 +7,41 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Paramètres'),
+      /*appBar: AppBar(
+        title: const Text('Paramètres'
+),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
         backgroundColor: yellow,
-      ),
+      ),*/
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 16),
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back, color: yellow,),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                const SizedBox(width: 10),
+                const Text(
+                  'Paramètres',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: yellow,
+                  ),
+                ),
+              ],
+            ),
             const Divider(thickness: 1, color: yellow),
             const SizedBox(height: 16),
             _buildSettingItem('Compte utilisateur'),
             _buildSettingItem('Réglages'),
-            _buildSettingItem('Langues'),
-            _buildSettingItem('Mentions légales'),
-            _buildSettingItem('Sécurité et Confidentialité'),
-            _buildSettingItem('Nouveautés'),
             const Spacer(),
             _buildSettingItem('Se déconnecter', isHighlighted: true),
           ],

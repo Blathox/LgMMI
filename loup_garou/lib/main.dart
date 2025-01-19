@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loup_garou/pages/game_settings_screen.dart';
 import 'package:loup_garou/pages/home_page.dart';
 import 'package:loup_garou/pages/login_screen.dart';
+import 'package:loup_garou/pages/rules_page.dart';
 import 'package:loup_garou/pages/waiting_screen.dart';
 import 'package:loup_garou/visuals/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
         textTheme: const TextTheme(
@@ -41,6 +43,7 @@ class MyApp extends StatelessWidget {
         '/settingsGame': (context) =>  const GameSettingsScreen(),
         '/waitingScreen':(context)=>const WaitingScreen(),
         '/globalSettings':(context)=>const SettingsPage(),
+        '/rulesPage':(context) => const RulesPage(),
       },
       home: const LoginScreen(),
     );
