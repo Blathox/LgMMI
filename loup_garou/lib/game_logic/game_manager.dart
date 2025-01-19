@@ -111,7 +111,7 @@ class GameManager {
 }
   
     // Phase de discussion avec le chat
-    openChatScreen(context, gameId);
+    // openChatScreen(context, gameId);
 
     // Récupérer la durée de vote
     int voteDuration = await fetchVoteDuration(gameId);
@@ -125,14 +125,14 @@ class GameManager {
     gamePhase.switchPhase();
   }
 
-  void openChatScreen(BuildContext context, String gameId) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ChatScreen(gameId: gameId, playerId: playersM.getPlayers()[0].id), // Exemple
-      ),
-    );
-  }
+  // void openChatScreen(BuildContext context, String gameId) {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => ChatScreen(gameId: gameId, playerId: playersM.playerList[0].id), // Exemple
+  //     ),
+  //   );
+  // }
 
   void addPlayer(Player player) {
     players.add(player);

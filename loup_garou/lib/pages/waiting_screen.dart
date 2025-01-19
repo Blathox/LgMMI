@@ -1,6 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:loup_garou/game_logic/players_manager.dart';
-import 'package:loup_garou/pages/login_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../game_logic/player.dart';
 
@@ -15,22 +16,40 @@ class _WaitingScreenState extends State<WaitingScreen> {
   final PlayersManager playersManager = PlayersManager();
   List<Player> players = [];
   bool isLoading = true;
-  late String gameCode; // Contient le code de la partie
+  String? gameCode;
+  StreamSubscription? _gameStreamSubscription;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Récupérer les arguments
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final newGameCode = args?['gameCode'];
+
+    if (newGameCode != null && newGameCode != 'Code introuvable') {
+      setState(() {
+        gameCode = newGameCode;
+      });
       _initializeGame();
-    });
+    } else {
+      print('Erreur : Code de la partie introuvable.');
+    }
+  }
+
+  @override
+  void dispose() {
+    _gameStreamSubscription?.cancel();
+    super.dispose();
   }
 
   Future<void> _initializeGame() async {
-    // Récupérer le code de la partie depuis les arguments
-    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    gameCode = args?['gameCode'] ?? 'Code introuvable';
-
-    if (gameCode == 'Code introuvable') {
+    if (gameCode == null || gameCode == '') {
       print('Erreur : Code de la partie introuvable.');
       return;
     }
@@ -39,66 +58,70 @@ class _WaitingScreenState extends State<WaitingScreen> {
     await _loadPlayers();
 
     // Écouter les mises à jour en temps réel depuis Supabase
-    Supabase.instance.client
+    _gameStreamSubscription = Supabase.instance.client
         .from('GAMES')
         .stream(primaryKey: ['id'])
-        .eq('game_code', gameCode)
+        .eq('game_code', gameCode ?? '')
         .listen((data) {
-      _loadPlayers(); 
+      if (mounted) {
+        _loadPlayers();
+      }
     });
   }
 
   Future<void> _loadPlayers() async {
+    if (!mounted) return;
+
     setState(() {
       isLoading = true;
     });
 
     try {
-      print(gameCode);
+      // Récupérer les joueurs associés au code de la partie
       final response = await Supabase.instance.client
           .from('GAMES')
           .select('users')
-          .eq('game_code', gameCode)
+          .eq('game_code', gameCode ?? '')
           .single();
-print('test');
-if (response['users'] != null) {
 
-  final List<String> playerIds = List<String>.from(
-    response['users'].map((player) => player.toString()), 
-  );
+      if (!mounted) return;
 
-  if (playerIds.isNotEmpty) {
-    try {
-      for(int i = 0; i < playerIds.length; i++){
-      final usersResponse = await supabase
-          .from('USERS')
-          .select()
-          .eq('id', playerIds[i]).single();
-          
-      if (playersManager.getPlayerByName(usersResponse['username'])==null) {
-        
-        final String username = usersResponse['username'] as String;
-        playersManager.addPlayer(Player(username, false));
-      }}
-        } catch (e) {
-      print('Erreur lors de la récupération des utilisateurs : $e');
-    }
-  }
-}
+      if (response['users'] != null) {
+        final List<dynamic> playerIds = response['users'];
 
+        for (var id in playerIds) {
+          try {
+            final userResponse = await Supabase.instance.client
+                .from('USERS')
+                .select('username')
+                .eq('id', id)
+                .single();
 
+            if (!mounted) return;
 
+            final String username = userResponse['username'];
+            if (playersManager.getPlayerByName(username) == null) {
+              playersManager.addPlayer(Player(username, false));
+            }
+          } catch (e) {
+            print('Erreur lors de la récupération de l\'utilisateur avec l\'ID $id : $e');
+          }
+        }
+      }
 
+      if (mounted) {
         setState(() {
           players = playersManager.players;
-          isLoading = false;
         });
-      
+      }
     } catch (e) {
       print('Erreur lors du chargement des joueurs : $e');
-      setState(() {
-        isLoading = false;
-      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
