@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:loup_garou/pages/chose_game_mode.dart';
+import 'package:loup_garou/pages/game_screen.dart';
 import 'package:loup_garou/pages/game_settings_screen.dart';
 import 'package:loup_garou/pages/home_page.dart';
 import 'package:loup_garou/pages/login_screen.dart';
@@ -44,6 +46,8 @@ class MyApp extends StatelessWidget {
         '/waitingScreen':(context)=>const WaitingScreen(),
         '/globalSettings':(context)=>const SettingsPage(),
         '/rulesPage':(context) => const RulesPage(),
+        '/gameMode':(context)=>const ChoseGameMode(),
+        '/game':(context)=>const GameScreen()
       },
       home: const LoginScreen(),
     );

@@ -191,7 +191,7 @@ class _GameSettingsScreenState extends State<GameSettingsScreen> {
                         codeGame);
                     // ignore: use_build_context_synchronously
                     Navigator.pushNamed(context, '/waitingScreen',
-                        arguments: {'gameCode': codeGame});
+                        arguments: {'gameCode': codeGame, 'gameSettings': gameSettings, 'isHost': true});
                   } catch (e) {
                     sm.showSnackBar(SnackBar(
                         content: Text(

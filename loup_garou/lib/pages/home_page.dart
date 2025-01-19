@@ -22,9 +22,8 @@ class MainPage extends StatelessWidget {
               child: ElevatedButton(
                 
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ChoseGameMode()),
+                  Navigator.pushNamed(context,
+                   '/gameMode'
                   );
                 },
                 
@@ -115,7 +114,7 @@ class MainPage extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SettingsPage()),
+                    MaterialPageRoute(builder: (context) => const SettingsPage()),
               );
             },
             style: ElevatedButton.styleFrom(
