@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:loup_garou/game_logic/game_settings_manager.dart';
 import 'package:loup_garou/game_logic/player.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../screens/chat_screen.dart';
 import 'package:loup_garou/game_logic/players_manager.dart';
 import 'package:loup_garou/game_logic/roles.dart';
 
@@ -109,30 +108,6 @@ class GameManager {
     return [];
   }
 }
-  
-    // Phase de discussion avec le chat
-    openChatScreen(context, gameId);
-
-    // Récupérer la durée de vote
-    int voteDuration = await fetchVoteDuration(gameId);
-    print("Durée de la phase de vote : $voteDuration secondes.");
-
-    // Attendre la fin de la durée configurée
-    await Future.delayed(Duration(seconds: voteDuration));
-    print("Fin de la phase de vote.");
-
-    // Passer à la phase suivante
-    gamePhase.switchPhase();
-  }
-
-  void openChatScreen(BuildContext context, String gameId) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ChatScreen(gameId: gameId, playerId: playersM.getPlayers()[0].id), // Exemple
-      ),
-    );
-  }
 
   void addPlayer(Player player) {
     players.add(player);
@@ -157,4 +132,5 @@ class GameManager {
     loversPlayers.add(player1);
     loversPlayers.add(player2);
   }
+}
 }
