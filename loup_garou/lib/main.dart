@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
         '/globalSettings':(context)=>const SettingsPage(),
         '/rulesPage':(context) => const RulesPage(),
         '/gameMode':(context)=>const ChoseGameMode(),
-        '/game':(context)=>const GameScreen()
+        '/game':(context)=>GameScreen()
       },
       home: const LoginScreen(),
     );

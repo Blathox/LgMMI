@@ -14,7 +14,7 @@ class GameSettingsManager {
       order: 5,
     ),
     Villageois(
-        name: 'villageois',
+        name: 'Villageois',
         description:
             "Le villageois n'a pas de rôle particulier pendant la nuit, il doit trouver et éliminer les loups lors du vote du village",
         order: 0),
@@ -47,7 +47,7 @@ class GameSettingsManager {
     order: 1, // Set the appropriate order value
   );
   Villageois villager = Villageois(
-      name: 'villageois',
+      name: 'Villageois',
       description:
           "Le villageois n'a pas de rôle particulier pendant la nuit, il doit trouver et éliminer les loups lors du vote du village",
       order: 0);

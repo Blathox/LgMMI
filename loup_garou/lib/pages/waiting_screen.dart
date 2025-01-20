@@ -68,7 +68,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
       .eq('game_code', gameCode ?? '')
       .listen((data) async {
     if (data.isEmpty) return;
-
+    else{
     final updatedGame = data.first;
 
     if (updatedGame['users'] != null) {
@@ -76,20 +76,20 @@ class _WaitingScreenState extends State<WaitingScreen> {
 
       if (!updatedPlayers.contains(players.first.idPlayer)) {
         // L'administrateur s'est déconnecté
-        if (mounted) {
-          await Supabase.instance.client
-              .from('GAMES')
-              .delete()
-              .eq('game_code', gameCode ??'');
-          Navigator.pushNamed(context,'/gameMode', arguments: {
-            'message': 'La partie a été annulée car l\'administrateur s\'est déconnecté.'
-          });
-        }
+        // if (mounted) {
+        //   await Supabase.instance.client
+        //       .from('GAMES')
+        //       .delete()
+        //       .eq('game_code', gameCode ??'');
+        //   Navigator.pushNamed(context,'/gameMode', arguments: {
+        //     'message': 'La partie a été annulée car l\'administrateur s\'est déconnecté.'
+        //   });
+        // }
       } else {
         await _loadPlayers(); // Rafraîchir la liste des joueurs
       }
     }
-  });
+  }});
 }
 
 
@@ -100,49 +100,46 @@ class _WaitingScreenState extends State<WaitingScreen> {
       isLoading = true;
     });
 
-  
-
-  
-
     try {
+     
       // Récupérer les joueurs associés au code de la partie
+      print(await Supabase.instance.client
+          .from('GAMES').select());
       final response = await Supabase.instance.client
-          .from('GAMES')
-          .select()
-          .eq('game_code', gameCode ?? '')
-          .single();
+          .from('GAMES').select().eq('game_code', gameCode ?? '');
           print('rep $response');
+       
+
       setState(() {
-        settings = response['settings'];
+        settings = response[0]['settings'];
       });
       if (!mounted) return;
 
-      if (response['users'] != null) {
-        final List<dynamic> playerIds = response['users'];
+      final List<dynamic> playerIds = response[0]['users'];
 
-        for (var id in playerIds) {
-          try {
-            
-            final userResponse = await Supabase.instance.client
-                .from('USERS')
-                .select('username')
-                .eq('id', id)
-                .single();
+      for (var id in playerIds) {
+        try {
+          
+          final userResponse = await Supabase.instance.client
+              .from('USERS')
+              .select('username')
+              .eq('id', id)
+              .single();
 
-            if (!mounted) return;
+          if (!mounted) return;
 
-            final String username = userResponse['username'];
-            Player p= Player(username, false);
-            p.idPlayer = id;
-            if (playersManager.getPlayerByName(username) == null) {
-              playersManager.addPlayer(p);
-            }
-          } catch (e) {
-            print('Erreur lors de la récupération de l\'utilisateur avec l\'ID $id : $e');
+          final String username = userResponse['username'];
+          Player p= Player(username, false);
+          p.idPlayer = id;
+          playersManager.addAlivePlayer(p);
+          if (playersManager.getPlayerByName(username) == null) {
+            playersManager.addPlayer(p);
           }
+        } catch (e) {
+          print('Erreur lors de la récupération de l\'utilisateur avec l\'ID $id : $e');
         }
       }
-
+    
       if (mounted) {
         setState(() {
           players = playersManager.players;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loup_garou/game_logic/game_settings_manager.dart';
 import 'package:loup_garou/game_logic/player.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../screens/chat_screen.dart';
+// import '../screens/chat_screen.dart';
 import 'package:loup_garou/game_logic/players_manager.dart';
 import 'package:loup_garou/game_logic/roles.dart';
 
@@ -10,34 +10,37 @@ import 'phases.dart';
 
 class GameManager {
   GamePhase gamePhase = GamePhase();
-  GameSettingsManager gameSettings = GameSettingsManager(6);
   List<RoleAction> roles = [];
   List<RoleAction> rolesAttribued = [];
-  List<Player> players = [];
   List<Player> alivePlayers = [];
   List<Player> deadPlayers = [];
   List<Player> loversPlayers = [];
+  String message = "";
   bool isWin = false;
   PlayersManager playersM = PlayersManager();
 
   final supabase = Supabase.instance.client;
 
-  GameManager(this.gameSettings) {
-    roles = gameSettings.roles;
+  GameManager(this.roles) {
+    
+    roles = roles;
     rolesAttribued = [];
   }
-
+  get getRoles => roles;
+  get getRolesAttribued => rolesAttribued;
+  get getMessage =>message;
   void startGame(BuildContext context, String gameId) async {
     print("Attribution des rôles");
-    roles.shuffle();
-    for (int i = 0; i < playersM.playerList.length; i++) {
+    // roles.shuffle();
+    // for (int i = 0; i < playersM.playerList.length; i++) {
 
-      playersM.playerList[i].setRole(roles[i]);
-      rolesAttribued.add(roles[i]);
-      roles.remove(roles[i]);
-    }
-    rolesAttribued.sort((a, b) => a.order.compareTo(b.order));
-
+    //   playersM.playerList[i].setRole(roles[i]);
+    //   print("Le joueur ${playersM.playerList[i].name} a le rôle de ${roles[i].name}");
+    //   rolesAttribued.add(roles[i]);
+    //   roles.remove(roles[i]);
+    // }
+    // rolesAttribued.sort((a, b) => a.order.compareTo(b.order));
+    print ("Les rôles attribués sont : $rolesAttribued");
     gamePhase.currentPhase = Phase.Night;
 
     await processNightActions(context);
@@ -60,6 +63,7 @@ class GameManager {
       return [];
     }
   }
+
 
   Future<int> fetchVoteDuration(String gameId) async {
     try {
@@ -124,7 +128,18 @@ class GameManager {
     // Passer à la phase suivante
     gamePhase.switchPhase();
   }
-
+  
+  void attribuerRoles(){
+    message = "Attribution des rôles";
+    roles.shuffle();
+    for (int i = 0; i < playersM.playerList.length; i++) {
+      playersM.playerList[i].setRole(roles[i]);
+      rolesAttribued.add(roles[i]);
+      roles.remove(roles[i]);
+    }
+    rolesAttribued.sort((a, b) => a.order.compareTo(b.order));
+    message= "Les rôles ont été attribués";
+  }
   // void openChatScreen(BuildContext context, String gameId) {
   //   Navigator.push(
   //     context,
@@ -134,27 +149,7 @@ class GameManager {
   //   );
   // }
 
-  void addPlayer(Player player) {
-    players.add(player);
-  }
+ 
 
-  void removePlayer(Player player) {
-    players.remove(player);
-  }
-
-  Player? getPlayerByName(String name) {
-    for (Player player in players) {
-      if (player.name == name) {
-        return player;
-      }
-    }
-    return null;
-  }
-
-  void addPlayerLinked(Player player1, Player player2) {
-    player1.isLinked = true;
-    player2.isLinked = true;
-    loversPlayers.add(player1);
-    loversPlayers.add(player2);
-  }
+ 
 }

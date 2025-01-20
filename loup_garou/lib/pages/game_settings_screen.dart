@@ -106,7 +106,7 @@ class _GameSettingsScreenState extends State<GameSettingsScreen> {
                             ),
                           ),
                           const SizedBox(height: 10),
-                          if (role.name == 'villageois') ...[
+                          if (role.name == 'Villageois') ...[
                             Text(gameSettings.villagers.toString()),
                           ],
                           if (role.name == 'Loup-Garou') ...[
@@ -119,9 +119,9 @@ class _GameSettingsScreenState extends State<GameSettingsScreen> {
                                     addCounter: () {
                                       setState(() {
                                         print(gameSettings
-                                            .getRoleCount('villageois'));
+                                            .getRoleCount('Villageois'));
                                         if (gameSettings
-                                                .getRoleCount('villageois') >
+                                                .getRoleCount('Villageois') >
                                             0) {
                                           gameSettings.addWolf();
                                         }
@@ -137,7 +137,7 @@ class _GameSettingsScreenState extends State<GameSettingsScreen> {
                               ],
                             ),
                           ] else ...[
-                            if (role.name != 'villageois') ...[
+                            if (role.name != 'Villageois') ...[
                               Counter(
                                   valueCounter: gameSettings
                                       .getRoleCount(role.name)
@@ -147,7 +147,7 @@ class _GameSettingsScreenState extends State<GameSettingsScreen> {
                                       if (gameSettings.getRoleCount(role.name) <
                                               1 &&
                                           gameSettings
-                                                  .getRoleCount("villageois") >
+                                                  .getRoleCount("Villageois") >
                                               1) {
                                         gameSettings.addRole(role);
                                         gameSettings.villagers--;

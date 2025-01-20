@@ -14,7 +14,14 @@ get playerList {
 set playerList(List<Player> players) {
     this.players = players;
   }
-  List<Player> getAlivePlayers() {
+  set setAlivePlayers(List<Player> players) {
+    alivePlayers = players;
+  }
+
+  void addAlivePlayer(Player player) {
+    alivePlayers.add(player);
+  }
+  List<Player> getalivePlayers() {
     return alivePlayers;
   }
 
