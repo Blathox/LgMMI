@@ -15,27 +15,22 @@ Future<bool> joinGame(BuildContext context, String code) async {
         .eq('game_code', code)
         .single();
 
-    if (gameResponse['id'] == null) {
+    if (gameResponse['id'] == null || gameResponse['users'] == null) {
       sm.showSnackBar(
         const SnackBar(content: Text("Code de partie invalide")),
       );
-      return;
+      return false;
     }
 
-    final existingUsers = gameResponse['users'] as List<dynamic>? ?? [];
+    final existingUsers = List<String>.from(gameResponse['users'] ?? []);
 
     // Vérifie l'utilisateur actuel
-    final userResponse = await supabase
-        .from('USERS')
-        .select('id')
-        .eq('id_user', supabase.auth.currentUser!.id)
-        .single();
-
-    if (userResponse['id'] == null) {
+    final currentUser = supabase.auth.currentUser;
+    if (currentUser == null) {
       sm.showSnackBar(
-        const SnackBar(content: Text("Utilisateur introuvable")),
+        const SnackBar(content: Text("Utilisateur non authentifié")),
       );
-      return;
+      return false;
     }
 
 
@@ -44,7 +39,7 @@ Future<bool> joinGame(BuildContext context, String code) async {
       sm.showSnackBar(
         const SnackBar(content: Text("Vous avez déjà rejoint cette partie")),
       );
-      return;
+      return true;
     }
 
     // Ajoute l'utilisateur à la partie
@@ -56,19 +51,21 @@ Future<bool> joinGame(BuildContext context, String code) async {
         .eq('game_code', code)
         .select(); 
 
-    if (updateResponse.error != null) {
+    if (updateResponse.isEmpty) {
       sm.showSnackBar(
-        SnackBar(content: Text("Erreur : ${updateResponse.error!.message}")),
+        const SnackBar(content: Text("Erreur lors de la mise à jour de la partie")),
       );
-      return;
+      return false;
     }
 
     sm.showSnackBar(
       SnackBar(content: Text("Partie rejointe avec succès ! Code : $code")),
     );
+    return true;
   } catch (e) {
     sm.showSnackBar(
       SnackBar(content: Text("Erreur inattendue : $e")),
     );
+    return false;
   }
 }

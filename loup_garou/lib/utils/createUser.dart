@@ -8,12 +8,17 @@ Future<void> createUser(
   // Get a reference your Supabase client
   final supabase = Supabase.instance.client;
   final sm = ScaffoldMessenger.of(context);
-
+  try{
   final authResponse = await supabase.auth
       .signUp(password: password, email: email, data: {'username': pseudo});
-
+  }catch(e){
+    sm.showSnackBar(
+      SnackBar(content: Text("Erreur lors de l'inscription : $e")),
+    );
+    return;
+  }
 
   sm.showSnackBar(
-      SnackBar(content: Text("Logged in: ${authResponse.user?.email}")));
+      const SnackBar(content: Text("Inscription réussie ! Veuillez confirmer votre adresse mail pour vous connecter")));
   
 }

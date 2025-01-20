@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:loup_garou/game_logic/game_settings_manager.dart';
 import 'package:loup_garou/game_logic/players_manager.dart';
 import 'package:loup_garou/visuals/variables.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -80,9 +81,15 @@ class _WaitingScreenState extends State<WaitingScreen> {
   }
 
   Future<void> _loadPlayers() async {
+    if (!mounted) return;
+
     setState(() {
       isLoading = true;
     });
+
+  
+
+  
 
     try {
       print('gameCode: ${Globals.gameCode}');
@@ -129,18 +136,19 @@ class _WaitingScreenState extends State<WaitingScreen> {
         }
       }
 
-
-
-
+      if (mounted) {
         setState(() {
           players =  Globals.playerManager.players;
         });
-      
+      }
     } catch (e) {
       print('Erreur lors du chargement des joueurs : $e');
-      setState(() {
-        isLoading = false;
-      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 

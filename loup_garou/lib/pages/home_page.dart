@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loup_garou/pages/rules_page.dart';
 import 'package:loup_garou/visuals/colors.dart';
 import 'chose_game_mode.dart';
 import 'settings_page.dart';
@@ -21,9 +22,8 @@ class MainPage extends StatelessWidget {
               child: ElevatedButton(
                 
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ChoseGameMode()),
+                  Navigator.pushNamed(context,
+                   '/gameMode'
                   );
                 },
                 
@@ -63,7 +63,12 @@ class MainPage extends StatelessWidget {
               width: 250,
               height: 45,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const RulesPage()),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4),
@@ -109,7 +114,7 @@ class MainPage extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SettingsPage()),
+                    MaterialPageRoute(builder: (context) => const SettingsPage()),
               );
             },
             style: ElevatedButton.styleFrom(
