@@ -108,6 +108,7 @@ class GameManager {
     return [];
   }
 }
+}
 
   void addPlayer(Player player) {
     players.add(player);
@@ -132,5 +133,4 @@ class GameManager {
     loversPlayers.add(player1);
     loversPlayers.add(player2);
   }
-}
 }
