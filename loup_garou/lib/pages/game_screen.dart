@@ -27,6 +27,8 @@ class _GameScreenState extends State<GameScreen> {
     try {
       // Initialisation des rôles en fonction des paramètres du jeu
       for (var role in Globals.gameSettings.rolesSelected) {
+                print('role ${role.getName}');
+
         final response = await Supabase.instance.client
             .from('ROLES')
             .select()
@@ -37,6 +39,7 @@ class _GameScreenState extends State<GameScreen> {
           print('Erreur lors de la récupération du rôle $role : $response');
           continue;
         }
+        print('role ${role.getName}');
 
         switch (role.getName) {
           case 'Loup-Garou':

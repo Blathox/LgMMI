@@ -1,3 +1,5 @@
+// ignore_for_file: overridden_fields
+
 import 'package:flutter/material.dart';
 import 'package:loup_garou/game_logic/player.dart';
 import 'package:loup_garou/game_logic/players_manager.dart';
@@ -106,7 +108,7 @@ void selectTarget(String targetName) {
 // Classe Sorcière (hérite de Villageois)
 class Sorciere extends Villageois {
   @override
-  String name = 'Sorciere';
+  String name = 'Sorcière';
 
   Sorciere({
     required super.description,
