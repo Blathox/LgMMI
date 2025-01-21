@@ -57,7 +57,7 @@ Future<bool> joinGame(BuildContext context, String code) async {
       );
       return false;
     }
-
+    Globals.gameCode = code;
     sm.showSnackBar(
       SnackBar(content: Text("Partie rejointe avec succès ! Code : $code")),
     );

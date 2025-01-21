@@ -179,13 +179,7 @@ class _GameSettingsScreenState extends State<GameSettingsScreen> {
 
                     createGame(
                         context,
-                        {
-                          'loups': Globals.gameSettings.wolves,
-                          'villageois': Globals.gameSettings.villagers,
-                          'nbJoueurs': Globals.gameSettings.players,
-                          'voteDuration': Globals.gameSettings.voteDuration,
-                          'rolesSelected': Globals.gameSettings.rolesSelected
-                        },
+                        Globals.gameSettings,
                         codeGame);
                         Globals.gameCode = codeGame;
                     // ignore: use_build_context_synchronously
