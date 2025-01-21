@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:loup_garou/game_logic/game_settings_manager.dart';
 import 'package:loup_garou/game_logic/player.dart';
@@ -15,8 +17,10 @@ class GameManager {
   List<Player> alivePlayers = [];
   List<Player> deadPlayers = [];
   List<Player> loversPlayers = [];
-  String message = "";
+  bool isRunning = false;
   bool isWin = false;
+  ValueNotifier<String> messageNotifier = ValueNotifier<String>("");
+
   PlayersManager playersM = PlayersManager();
 
   final supabase = Supabase.instance.client;
@@ -28,23 +32,38 @@ class GameManager {
   }
   get getRoles => roles;
   get getRolesAttribued => rolesAttribued;
-  get getMessage =>message;
-  void startGame(BuildContext context, String gameId) async {
-    print("Attribution des rôles");
-    // roles.shuffle();
-    // for (int i = 0; i < playersM.playerList.length; i++) {
+  set setRoles(List<RoleAction> roles) {
+    this.roles = roles;
+  }
+  set playersManager(PlayersManager playersManager) {
+    playersM = playersManager;
+  }
 
-    //   playersM.playerList[i].setRole(roles[i]);
-    //   print("Le joueur ${playersM.playerList[i].name} a le rôle de ${roles[i].name}");
-    //   rolesAttribued.add(roles[i]);
-    //   roles.remove(roles[i]);
+  // Getter pour accéder au message
+  String get getMessage => messageNotifier.value;
+
+  // Méthode pour mettre à jour le message
+  void updateMessage(String newMessage) {
+    messageNotifier.value = newMessage; // Notifie automatiquement les listeners
+  }
+    void startGame(BuildContext context, String gameId) async {
+      isRunning = true;
+      print(isRunning);
+    // gamePhase.currentPhase = Phase.Night;
+
+    // await processNightActions(context);
+    // await processDayActions(context, gameId);
+  }
+  void processGame(BuildContext context) async {
+      gamePhase.switchPhase();
+      print("Phase actuelle : ${gamePhase.currentPhase}");
+      // if(gamePhase.currentPhase == Phase.Night){
+        await processNightActions(context);
+    //   }else if(gamePhase.currentPhase == Phase.Day){
+    //     // await processDayActions(context, 'gameId');
+      
     // }
-    // rolesAttribued.sort((a, b) => a.order.compareTo(b.order));
-    print ("Les rôles attribués sont : $rolesAttribued");
-    gamePhase.currentPhase = Phase.Night;
 
-    await processNightActions(context);
-    await processDayActions(context, gameId);
   }
 
   Future<List<Map<String, dynamic>>> fetchKilledPlayers() async {
@@ -86,59 +105,65 @@ class GameManager {
   }
 
   Future<void> processNightActions(BuildContext context) async {
-    print("Phase de nuit : Les rôles effectuent leurs actions.");
+    updateMessage("Le village s'endort");
+    print('test $rolesAttribued');
     for (RoleAction role in rolesAttribued) {
+      print("Action du rôle : ${role.getName}");
       role.performAction(context, playersM);
     }
     print("Fin de la phase de nuit.");
   }
 
-  Future<void> processDayActions(BuildContext context, String gameId) async {
-    print("Le village se réveille...");
+//   Future<void> processDayActions(BuildContext context, String gameId) async {
+//     print("Le village se réveille...");
 
-    // Annonce des joueurs tués
-    Future<List<Map<String, dynamic>>> fetchKilledPlayers() async {
-  try {
-    final response = await supabase
-        .from('PLAYERS')
-        .select('id, name, role')
-        .eq('killedAtNight', true);
+//     // Annonce des joueurs tués
+//     Future<List<Map<String, dynamic>>> fetchKilledPlayers() async {
+//   try {
+//     final response = await supabase
+//         .from('PLAYERS')
+//         .select('id, name, role')
+//         .eq('killedAtNight', true);
 
-    if (response.isEmpty) {
-      return [];
-    }
-    return List<Map<String, dynamic>>.from(response);
-  } catch (error) {
-    print("Erreur lors de la récupération des joueurs tués : $error");
-    return [];
-  }
-}
+//     if (response.isEmpty) {
+//       return [];
+//     }
+//     return List<Map<String, dynamic>>.from(response);
+//   } catch (error) {
+//     print("Erreur lors de la récupération des joueurs tués : $error");
+//     return [];
+//   }
+// }
   
-    // Phase de discussion avec le chat
-    // openChatScreen(context, gameId);
+//     // Phase de discussion avec le chat
+//     // openChatScreen(context, gameId);
 
-    // Récupérer la durée de vote
-    int voteDuration = await fetchVoteDuration(gameId);
-    print("Durée de la phase de vote : $voteDuration secondes.");
+//     // Récupérer la durée de vote
+//     int voteDuration = await fetchVoteDuration(gameId);
+//     print("Durée de la phase de vote : $voteDuration secondes.");
 
-    // Attendre la fin de la durée configurée
-    await Future.delayed(Duration(seconds: voteDuration));
-    print("Fin de la phase de vote.");
+//     // Attendre la fin de la durée configurée
+//     await Future.delayed(Duration(seconds: voteDuration));
+//     print("Fin de la phase de vote.");
 
-    // Passer à la phase suivante
-    gamePhase.switchPhase();
-  }
+//     // Passer à la phase suivante
+//     gamePhase.switchPhase();
+//   }
   
   void attribuerRoles(){
-    message = "Attribution des rôles";
+    updateMessage("Attribution des rôles");
+    print('attribution roles $roles');
+    print(playersM.playerList.length);
+    print(playersM.playerList);
     roles.shuffle();
     for (int i = 0; i < playersM.playerList.length; i++) {
       playersM.playerList[i].setRole(roles[i]);
+      print('roles ${roles[i].getName}');
       rolesAttribued.add(roles[i]);
       roles.remove(roles[i]);
     }
     rolesAttribued.sort((a, b) => a.order.compareTo(b.order));
-    message= "Les rôles ont été attribués";
+   updateMessage("Les rôles ont été attribués");
   }
   // void openChatScreen(BuildContext context, String gameId) {
   //   Navigator.push(

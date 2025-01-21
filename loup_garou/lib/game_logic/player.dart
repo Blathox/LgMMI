@@ -4,13 +4,14 @@ class Player {
 
   String name;
   late RoleAction role;
+  late String roleName;
   bool isAlive;
   int voteCount = 0;
   bool isLinked = false;
   bool isTargeted = false;
   String idPlayer= '';
   Player(this.name, this.isAlive){
-    role = Villageois(description: '', name: '', order: 0);
+    role = Villageois(description: '', order: 0);
   }
 
   set setIdPlayer(String id){
@@ -53,8 +54,11 @@ class Player {
     this.role = role;
   }
 
-  RoleAction getRole() {
+  RoleAction getRole (){
     return role;
+  }
+  String getRoleName(){
+    return role.getName;
   }
 
   bool getIsAlive() {

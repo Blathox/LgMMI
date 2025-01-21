@@ -206,7 +206,7 @@ void _showGameCodeDialog(BuildContext context) {
                   // ignore: use_build_context_synchronously
                   context,
                   '/waitingScreen',
-                  arguments: {'gameCode': gameCode},
+                  arguments: {'gameCode': gameCode, 'isHost': true},
                 ); 
                 }
                

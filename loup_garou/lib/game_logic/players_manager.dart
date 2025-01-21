@@ -57,4 +57,13 @@ set playerList(List<Player> players) {
       
   }
     return null;
-}}
+}
+  Player getPlayerById(String id) {
+    for (Player player in players) {
+      if (player.idPlayer == id) {
+        return player;
+      }
+    }
+    throw Exception('Joueur non trouvé');
+  }
+}

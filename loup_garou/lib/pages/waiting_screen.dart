@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:loup_garou/game_logic/game_settings_manager.dart';
 import 'package:loup_garou/game_logic/players_manager.dart';
+import 'package:loup_garou/visuals/variables.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../game_logic/player.dart';
 
@@ -14,37 +16,32 @@ class WaitingScreen extends StatefulWidget {
 }
 
 class _WaitingScreenState extends State<WaitingScreen> {
-  final PlayersManager playersManager = PlayersManager();
+  PlayersManager playersManager = PlayersManager();
   List<Player> players = [];
   bool isLoading = true;
-  String? gameCode;
   StreamSubscription? _gameStreamSubscription;
   bool isHost = false;
-  Map<String, dynamic> settings = {};
+  GameSettingsManager settings = Globals.gameSettings;
+
   @override
   void initState() {
     super.initState();
+    // Initialise le playerManager dans les globals
+    Globals.playerManager = playersManager;
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // Récupérer les arguments
+    // Récupérer les arguments passés à l'écran
     final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    final newGameCode = args?['gameCode'];
-  final newIsHost = args?['isHost'];
+    final newIsHost = args?['isHost'];
 
-    if (newGameCode != null && newGameCode != 'Code introuvable') {
-      setState(() {
-        gameCode = newGameCode;
-        isHost = newIsHost;
-        
-      });
-      _initializeGame();
-    } else {
-      print('Erreur : Code de la partie introuvable.');
-    }
+    setState(() {
+      isHost = newIsHost ?? false;
+    });
+    _initializeGame();
   }
 
   @override
@@ -54,44 +51,34 @@ class _WaitingScreenState extends State<WaitingScreen> {
   }
 
   Future<void> _initializeGame() async {
-  if (gameCode == null || gameCode == '') {
-    print('Erreur : Code de la partie introuvable.');
-    return;
-  }
-
-  await _loadPlayers();
-
-  // Écouter les mises à jour en temps réel depuis Supabase
-  _gameStreamSubscription = Supabase.instance.client
-      .from('GAMES')
-      .stream(primaryKey: ['id'])
-      .eq('game_code', gameCode ?? '')
-      .listen((data) async {
-    if (data.isEmpty) return;
-    else{
-    final updatedGame = data.first;
-
-    if (updatedGame['users'] != null) {
-      final List<dynamic> updatedPlayers = updatedGame['users'];
-
-      if (!updatedPlayers.contains(players.first.idPlayer)) {
-        // L'administrateur s'est déconnecté
-        // if (mounted) {
-        //   await Supabase.instance.client
-        //       .from('GAMES')
-        //       .delete()
-        //       .eq('game_code', gameCode ??'');
-        //   Navigator.pushNamed(context,'/gameMode', arguments: {
-        //     'message': 'La partie a été annulée car l\'administrateur s\'est déconnecté.'
-        //   });
-        // }
-      } else {
-        await _loadPlayers(); // Rafraîchir la liste des joueurs
-      }
+    if ( Globals.gameCode == '') {
+      print(Globals.gameCode);
+      print('Erreur : Code de la partie introuvable.');
+      return;
     }
-  }});
-}
 
+    await _loadPlayers();
+
+    // Écouter les mises à jour en temps réel depuis Supabase
+    _gameStreamSubscription = Supabase.instance.client
+        .from('GAMES')
+        .stream(primaryKey: ['id'])
+        .eq('game_code', Globals.gameCode)
+        .listen((data) async {
+      if (data.isEmpty) return;
+      final updatedGame = data.first;
+
+      if (updatedGame['users'] != null) {
+        final List<dynamic> updatedPlayers = updatedGame['users'];
+
+        if (!updatedPlayers.contains(players.first.idPlayer)) {
+          // Gérer la déconnexion de l'administrateur
+        } else {
+          await _loadPlayers(); // Rafraîchir la liste des joueurs
+        }
+      }
+    });
+  }
 
   Future<void> _loadPlayers() async {
     if (!mounted) return;
@@ -101,25 +88,29 @@ class _WaitingScreenState extends State<WaitingScreen> {
     });
 
     try {
-     
+      print('gameCode: ${Globals.gameCode}');
       // Récupérer les joueurs associés au code de la partie
-      print(await Supabase.instance.client
-          .from('GAMES').select());
       final response = await Supabase.instance.client
-          .from('GAMES').select().eq('game_code', gameCode ?? '');
-          print('rep $response');
-       
+          .from('GAMES')
+          .select()
+          .eq('game_code', Globals.gameCode);
+
+      if (response.isEmpty) {
+        print('Aucun jeu trouvé pour ce code.');
+        return;
+      }
 
       setState(() {
-        settings = response[0]['settings'];
+        print(response[0]['settings']);
+        print("test");
       });
+
       if (!mounted) return;
 
       final List<dynamic> playerIds = response[0]['users'];
 
       for (var id in playerIds) {
         try {
-          
           final userResponse = await Supabase.instance.client
               .from('USERS')
               .select('username')
@@ -129,20 +120,21 @@ class _WaitingScreenState extends State<WaitingScreen> {
           if (!mounted) return;
 
           final String username = userResponse['username'];
-          Player p= Player(username, false);
+          Player p = Player(username, false);
           p.idPlayer = id;
-          playersManager.addAlivePlayer(p);
-          if (playersManager.getPlayerByName(username) == null) {
-            playersManager.addPlayer(p);
+          Globals.playerManager.addAlivePlayer(p);
+
+          if ( Globals.playerManager.getPlayerByName(username) == null) {
+             Globals.playerManager.addPlayer(p);
           }
         } catch (e) {
           print('Erreur lors de la récupération de l\'utilisateur avec l\'ID $id : $e');
         }
       }
-    
+
       if (mounted) {
         setState(() {
-          players = playersManager.players;
+          players =  Globals.playerManager.players;
         });
       }
     } catch (e) {
@@ -167,7 +159,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
         children: [
           const SizedBox(height: 20),
           Text(
-            'Code de la partie : $gameCode',
+            'Code de la partie : ${Globals.gameCode}',
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),
@@ -177,7 +169,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
             Expanded(
               child: Column(
                 children: [
-                  Text( 'Joueurs connectés : ${players.length}/${settings['nbJoueurs']}'),
+                  Text('Joueurs connectés : ${players.length}/${settings.nbPlayers}'),
                   players.isNotEmpty
                       ? Expanded(
                           child: ListView.builder(
@@ -196,13 +188,15 @@ class _WaitingScreenState extends State<WaitingScreen> {
                           ),
                         ),
                   if (players.isNotEmpty && isHost)
-                    ElevatedButton(   
+                    ElevatedButton(
                       onPressed: () {
                         Supabase.instance.client
                             .from('GAMES')
                             .update({'status': 'started'})
-                            .eq('game_code', gameCode as Object);
-                        Navigator.pushNamed(context, '/game', arguments: {'gameCode': gameCode, 'playersManager': playersManager, 'settings': settings, 'isHost': isHost});
+                            .eq('game_code', Globals.gameCode as Object);
+                        Navigator.pushNamed(context, '/game', arguments: {
+                          'isHost': isHost
+                        });
                       },
                       child: const Text('Commencer la partie'),
                     ),
