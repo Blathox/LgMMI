@@ -86,7 +86,7 @@ class GameManager {
     return [];
   }
 }
-
+////////////////////////////// VOTE VOTE VOTE ///////////////////////////////////
 
 //   Future<int> fetchVoteDuration(String gameId) async {
 //   try {
@@ -266,7 +266,6 @@ await refreshAlivePlayers();
   // Vérifie la liste des joueurs vivants
   print("Liste des joueurs vivants (alivePlayers) :");
   for (var player in alivePlayers) {
-    print("ID joueur vivant : ${player.playerId}");
   }
 
   // Trouve le joueur éliminé dans la liste locale
@@ -274,10 +273,9 @@ await refreshAlivePlayers();
   (p) => p.playerId.trim() == eliminatedPlayerId!.trim(),
   );
  
-  print("Liste des joueurs vivants (alivePlayers) après mise à jour :");
 for (var player in alivePlayers) {
-  print("le player $player");
-  print("ID joueur vivant : ${player.playerId}, Nom : ${player.getName()}");
+  // print("le player $player");
+  // print("ID joueur vivant : ${player.playerId}, Nom : ${player.getName()}");
 }
 
 
