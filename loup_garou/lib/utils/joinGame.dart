@@ -51,7 +51,9 @@ Future<bool> joinGame(BuildContext context, String code) async {
         .eq('game_code', code)
         .select('id').single(); 
       Globals.gameId= updateResponse['id'];
-
+      Globals.gameCode= code;
+      // ignore: avoid_print
+      print('gameId ${Globals.gameId}');
     if (updateResponse.isEmpty) {
       sm.showSnackBar(
         const SnackBar(content: Text("Erreur lors de la mise à jour de la partie")),

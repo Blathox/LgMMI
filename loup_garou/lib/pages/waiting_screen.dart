@@ -49,7 +49,8 @@ class _WaitingScreenState extends State<WaitingScreen> {
   }
 
   Future<void> _initializeGame() async {
-    if (Globals.gameCode.isEmpty) {
+    print(Globals.gameCode);
+    if (Globals.gameCode == '') {
       print('Erreur : Code de la partie introuvable.');
       return;
     }
@@ -57,14 +58,16 @@ class _WaitingScreenState extends State<WaitingScreen> {
     await _loadPlayers();
 
     // Écouter les mises à jour en temps réel depuis Supabase
-    _gameStreamSubscription = Supabase.instance.client
-        .from('GAMES')
-        .stream(primaryKey: ['id'])
-        .eq('game_code', Globals.gameCode)
-        .listen((data) async {
-      if (data.isEmpty) return;
+  _gameStreamSubscription = Supabase.instance.client
+    .from('GAMES')
+    .stream(primaryKey: ['id'])
+    .eq('game_code', Globals.gameCode)
+    .listen((data) async {
+  if (data.isEmpty) return;
 
-      final updatedGame = data.first;
+  final updatedGame = data.first;
+  print('Données mises à jour : $updatedGame');
+
       final updatedPlayers = updatedGame['users'] ?? [];
 
       if (updatedGame['status'] == "started") {
@@ -91,11 +94,15 @@ class _WaitingScreenState extends State<WaitingScreen> {
     });
 
     try {
+      // ignore: avoid_print
+      print('code ${Globals.gameCode}');
+      print('idGame${Globals.gameId}');
       final response = await Supabase.instance.client
           .from('GAMES')
           .select()
           .eq('game_code', Globals.gameCode)
           .single();
+      print(response);
 
       final List<dynamic> playerIds = response['users'] ?? [];
 
@@ -150,9 +157,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),
-          if (isLoading)
-            const Center(child: CircularProgressIndicator())
-          else
+         
             Expanded(
               child: Column(
                 children: [
