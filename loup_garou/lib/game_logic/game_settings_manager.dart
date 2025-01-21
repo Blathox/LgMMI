@@ -1,4 +1,5 @@
 import 'package:loup_garou/game_logic/roles.dart';
+import 'package:loup_garou/visuals/variables.dart';
 import 'package:random_string/random_string.dart';
 
 class GameSettingsManager {
@@ -6,138 +7,115 @@ class GameSettingsManager {
   int nbPlayers = 6;
   int nbWolves = 1;
   late int nbVillagers;
-   int voteDuration; // Add a semicolon here
-  final List<RoleAction> roles = [
-    LoupGarou(
-      description: 'Un rôle de loup-garou',
-      order: 5,
-    ),
-    Villageois(
-        description:
-            "Le villageois n'a pas de rôle particulier pendant la nuit, il doit trouver et éliminer les loups lors du vote du village",
-        order: 0),
-    Sorciere(
-      description: 'Un rôle de sorcière',
-      order: 3,
-    ),
-    Chasseur(
-      description: 'Un rôle de chasseur',
-      order: 4,
-    ),
-    Cupidon(
-      description: 'Un rôle de cupidon',
-      order: 1,
-    ),
-    Voyante(
-      description: 'Un rôle de voyante',
-      order: 2,
-    ),
-  ];
-  late List<RoleAction> rolesSelected;
-  String codeGame= '';
-  LoupGarou loupGarou = LoupGarou(
-    description: 'Un loup-garou qui attaque les villageois.',
-    order: 1, // Set the appropriate order value
-  );
-  Villageois villager = Villageois(
-      description:
-          "Le villageois n'a pas de rôle particulier pendant la nuit, il doit trouver et éliminer les loups lors du vote du village",
-      order: 0);
+  int voteDuration;
+  late List<RoleAction> roles; // Liste complète des rôles
+  late List<RoleAction> rolesSelected; // Liste des rôles assignés
+  final List<RoleAction> optionalRoles = []; // Liste des rôles facultatifs
+  String codeGame = '';
 
-  GameSettingsManager(this.voteDuration) {
-    rolesSelected = [loupGarou];
-    
-    nbVillagers = nbPlayers - nbWolves;
-    for (int v = 0; v < nbVillagers; v++){
-      rolesSelected.add(villager);
-    }
+  GameSettingsManager(this.voteDuration);
+
+  /// Initialise les rôles depuis Globals
+  Future<void> initializeRoles() async {
+    roles = await Globals.rolesList;
+    _recalculateRoles();
   }
 
-  set nbPlayer(int nb) {
-    nbPlayers = nb;
-  }
-
-  get players {
-    print(nbPlayers);
+  int get players{
     return nbPlayers;
   }
-
-  get wolves {
+  int get wolves{
     return nbWolves;
   }
-
-  get rolesList {
-    return roles;
-  }
-
-  get voteDurations {
-    return voteDuration;
-  }
-
-  int get villagers {
+  int get villagers{
     return nbVillagers;
   }
-  set code(String codeGame){
-    this.codeGame= codeGame;
+  int get voteTime{
+    return voteDuration;
   }
-  
-  set villagers(int nb) {
-    nbVillagers = nb;
+  /// Ajoute ou retire un rôle spécifique dans les rôles facultatifs
+  void toggleRole(RoleAction role, bool add) {
+    if (add) {
+      if (!optionalRoles.contains(role)) {
+        optionalRoles.add(role);
+      }
+    } else {
+      optionalRoles.remove(role);
+    }
+    _recalculateRoles();
   }
 
+  /// Recalcule `rolesSelected` en fonction des joueurs, des loups et des rôles facultatifs
+  void _recalculateRoles() {
+    if (roles.isEmpty) {
+      throw Exception('Les rôles doivent être initialisés avant de recalculer.');
+    }
+
+    rolesSelected = [];
+
+    // Ajouter les loups-garous
+    rolesSelected.addAll(roles.whereType<LoupGarou>().take(nbWolves));
+
+    // Calculer le nombre de villageois
+    nbVillagers = nbPlayers - nbWolves - optionalRoles.length;
+
+    if (nbVillagers < 0) {
+      throw Exception("Le nombre de villageois ne peut pas être négatif.");
+    }
+
+    // Ajouter les villageois
+    rolesSelected.addAll(
+      roles.whereType<Villageois>().take(nbVillagers),
+    );
+
+    // Ajouter les rôles facultatifs
+    rolesSelected.addAll(optionalRoles);
+  }
+
+  /// Ajoute un joueur et met à jour les rôles
   void addPlayer() {
     nbPlayers++;
-    rolesSelected.add(villager);
-    nbVillagers++;
+    _recalculateRoles();
   }
 
+  /// Supprime un joueur et met à jour les rôles
   void removePlayer() {
-    nbPlayers--;
-    if(rolesSelected.contains(villager)){
-      rolesSelected.remove(villager);
-      nbVillagers--;
+    if (nbPlayers > 0) {
+      nbPlayers--;
+      _recalculateRoles();
     }
   }
 
-  void addRole(RoleAction role) {
-    rolesSelected.add(role);
-  }
-  void addTime(){
-    voteDuration+=30;
-  }
-  void removeTime(){
-    voteDuration-=30;
-  }
-
-  void removeRole(RoleAction role) {
-    rolesSelected.remove(role);
-  }
-  int getRoleCount(String role){
-    int count =0;
-
-    for (RoleAction roleSelected in rolesSelected){
-      if(role == roleSelected.name){
-
-        count++;
-      }
-
-    }
-    return count;
-  }
-
+  /// Ajoute un loup et met à jour les rôles
   void addWolf() {
-    print('test');
-    addRole(loupGarou);
-    removeRole(villager);
-    print(nbWolves);
-    nbWolves++;
-    nbVillagers--;
+    if (nbWolves < nbPlayers - 1) { // Toujours garder au moins un villageois
+      nbWolves++;
+      _recalculateRoles();
+    }
   }
 
+  /// Supprime un loup et met à jour les rôles
   void removeWolf() {
-    removeRole(loupGarou);
-    addRole(villager);
-    nbWolves--;
-    nbVillagers++;
+    if (nbWolves > 0) {
+      nbWolves--;
+      _recalculateRoles();
+    }
+  }
+
+  /// Ajoute du temps de vote
+  void addTime() {
+    voteDuration += 30;
+  }
+
+  /// Retire du temps de vote
+  void removeTime() {
+    if (voteDuration > 30) {
+      voteDuration -= 30;
+    }
+  }
+
+  /// Compte le nombre d'occurrences d'un rôle donné dans `rolesSelected`
+  int getRoleCount(String roleName) {
+    return rolesSelected.where((role) => role.name == roleName).length;
   }
 }

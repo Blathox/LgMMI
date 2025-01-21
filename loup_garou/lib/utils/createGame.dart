@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:loup_garou/game_logic/roles.dart';
+import 'package:loup_garou/game_logic/game_settings_manager.dart';
 import 'package:loup_garou/visuals/variables.dart';
 
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<String> createGame(
-    BuildContext context, Map<String, dynamic> settings,String codeGame) async {
+    BuildContext context, GameSettingsManager settings,String codeGame) async {
   
-  final supabase = Supabase.instance.client;
   final sm = ScaffoldMessenger.of(context);
-  final rolesNames = (settings['rolesSelected'] as List<RoleAction>)
-      .map((role) => role.name)
-      .toList();
+
   final date = DateTime.now();
-
+print(codeGame);
   // Mettre à jour settings avec les noms des rôles
-  settings['rolesSelected'] = rolesNames;
+var newSettings= {
+  'rolesSelected': settings.rolesSelected.map((role)=>role.name).toList(),
+  'loups': settings.wolves,
+  "villageois": settings.villagers,
+  "nbJoueurs": settings.players,
+  "voteDuration": settings.voteTime
+};
+print(newSettings);
 
-  
-   final authResponse = await supabase.from('GAMES').insert({'settings': settings, 'game_code': codeGame, 'status': 'waiting', 'created_at': date.toIso8601String(), 'updated_at':date.toIso8601String(),'users':[Globals.userId] });
-
+   final authResponse = await Globals.supabase.from('GAMES').insert({'settings': newSettings, 'game_code': codeGame, 'status': 'waiting', 'created_at': date.toIso8601String(), 'updated_at':date.toIso8601String(),'users':[Globals.userId] });
+  print('test $authResponse');
   sm.showSnackBar(
       SnackBar(content: Text("Game created with code Game : $codeGame $authResponse")));
   return codeGame;

@@ -1,15 +1,14 @@
-import 'dart:io';
+
+import 'dart:core';
 
 import 'package:flutter/material.dart';
-import 'package:loup_garou/game_logic/game_settings_manager.dart';
 import 'package:loup_garou/game_logic/player.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 // import '../screens/chat_screen.dart';
 import 'package:loup_garou/game_logic/players_manager.dart';
 import 'package:loup_garou/game_logic/roles.dart';
-import 'phases.dart';
-import 'package:collection/collection.dart';
 
+import 'phases.dart';
 
 class GameManager {
   GamePhase gamePhase = GamePhase();
@@ -67,62 +66,44 @@ class GameManager {
 
   }
 
-  /// Récupère les joueurs tués pendant la nuit
-  Future<List<Map<String, dynamic>>> fetchKilledPlayers() async {
-  try {
-    final response = await supabase
-        .from('PLAYERS')
-        .select('id, killedatnight, role, USERS(username)')
-        .eq('killedatnight', true);
+  Future <List<Map<String, dynamic>>> fetchKilledPlayers() async {
+    try {
+      final response = await supabase
+          .from('PLAYERS')
+          .select('name, role')
+          .eq('killedAtNight', true);
 
-    if (response.isEmpty) {
-      print("Aucune donnée récupérée ou le champ killedatnight = true est introuvable.");
+      if (response.isEmpty) {
+        return [];
+      }
+      return List<Map<String, dynamic>>.from(response);
+    } catch (error) {
+      print("Erreur lors de la récupération des joueurs tués : $error");
       return [];
     }
-
-    return List<Map<String, dynamic>>.from(response);
-  } catch (error) {
-    print("Erreur lors de la récupération des joueurs tués : $error");
-    return [];
   }
-}
-////////////////////////////// VOTE VOTE VOTE ///////////////////////////////////
 
-//   Future<int> fetchVoteDuration(String gameId) async {
-//   try {
-//     final response = await supabase
-//         .from('GAMES')
-//         .select('settings')
-//         .eq('id', gameId)
-//         .single();
 
-//     if (response.isEmpty) {
-//       print("Erreur : Durée de vote introuvable, valeur par défaut utilisée.");
-//       return 10; // Valeur par défaut
-//     }
+  Future<int> fetchVoteDuration(String gameId) async {
+    try {
+      final response = await supabase
+          .from('GAMES')
+          .select('settings->>voteDuration')
+          .eq('id', gameId)
+          .single();
 
-//     // Extraire la valeur de voteDuration depuis le champ JSON settings
-//     final settings = response['settings'] as Map<String, dynamic>;
-//     return settings['voteDuration'] ?? 90; // Retourner la valeur ou une valeur par défaut
-//   } catch (error) {
-//     print("Erreur lors de la récupération de la durée de vote : $error");
-//     return 90; // Valeur par défaut en cas d'erreur
-//   }
-// }
-Future<int> fetchVoteDuration(String gameId) async {
-  try {
-    // Ignorer la récupération réelle pour fixer le temps de vote à 10s
-    print("Durée de vote temporairement fixée à 10 secondes.");
-    return 1; // Durée temporaire de 10 secondes
-  } catch (error) {
-    print("Erreur lors de la récupération de la durée de vote : $error");
-    return 1; // Valeur par défaut en cas d'erreur
+      if (response.isEmpty) {
+        print("Erreur : Durée de vote introuvable, valeur par défaut utilisée.");
+        return 90;
+      }
+
+      return int.tryParse(response['settings->>voteDuration']) ?? 90;
+    } catch (error) {
+      print("Erreur lors de la récupération de la durée de vote : $error");
+      return 90;
+    }
   }
-}
 
-
-
-  /// Traite les actions de nuit
   Future<void> processNightActions(BuildContext context) async {
     updateMessage("Le village s'endort");
     print('test $rolesAttribued');
@@ -151,149 +132,48 @@ void attribuerRoles(){
     print("Le village se réveille...");
 
     // Annonce des joueurs tués
-    List<Map<String, dynamic>> killedPlayers = await fetchKilledPlayers();
-    if (killedPlayers.isEmpty) {
-      print("Aucun joueur n'a été tué cette nuit.");
-    } else {
-      for (var player in killedPlayers) {
-        print("${player['USERS']['username']} a été tué cette nuit. Son rôle était : ${player['role']}");
+    Future<List<Map<String, dynamic>>> fetchKilledPlayers() async {
+  try {
+    final response = await supabase
+        .from('PLAYERS')
+        .select('id, name, role')
+        .eq('killedAtNight', true);
 
-        deadPlayers.add(Player(
-          player['USERS']['username'],
-          false,
-        )..playerId = player['id']);
-
-        alivePlayers.removeWhere((p) => p.playerId == player['id']);
-      }
+    if (response.isEmpty) {
+      return [];
     }
+    return List<Map<String, dynamic>>.from(response);
+  } catch (error) {
+    print("Erreur lors de la récupération des joueurs tués : $error");
+    return [];
+  }
+}
+  
+    // Phase de discussion avec le chat
+    // openChatScreen(context, gameId);
 
-    // Préparer la phase de vote
-    await prepareVoting(gameId);
+    // Récupérer la durée de vote
+    int voteDuration = await fetchVoteDuration(gameId);
+    print("Durée de la phase de vote : $voteDuration secondes.");
 
-    // Collecter les votes
-    await collectVotes(gameId);
+    // Attendre la fin de la durée configurée
+    await Future.delayed(Duration(seconds :voteDuration));
+    print("Fin de la phase de vote.");
 
     // Passer à la phase suivante
     gamePhase.switchPhase();
   }
 
-  /// Prépare la phase de vote
-Future<void> prepareVoting(String gameId) async {
-  print("Préparation de la phase de vote...");
-  try {
-    await supabase.from('VOTES').delete().eq('game_id', gameId);
-    print("Tous les votes précédents ont été supprimés.");
-  } catch (error) {
-    print("Erreur lors de la préparation des votes : $error");
-  }
-}
+  // void openChatScreen(BuildContext context, String gameId) {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => ChatScreen(gameId: gameId, playerId: playersM.playerList[0].id), // Exemple
+  //     ),
+  //   );
+  // }
 
-/// Collecte les votes et gère les résultats
-Future<void> collectVotes(String gameId) async {
-  print("Phase de vote en cours...");
-
-  // Attendre la durée de la phase de vote
-  int voteDuration = await fetchVoteDuration(gameId);
-  print("Les joueurs ont $voteDuration secondes pour voter.");
-  await Future.delayed(Duration(seconds: voteDuration));
-
-  try {
-    // Récupérer les votes enregistrés
-    final response = await supabase.rpc('group_votes', params: {'game_id_input': gameId});
-print("Réponse brute de la procédure RPC : $response");
-    if (response == null || response.isEmpty) {
-      print("Aucun vote enregistré ou erreur lors de la récupération des votes.");
-      return;
-    }
-
-    print("Votes récupérés : $response");
-
-    // Calculer les votes
-    Map<String, int> voteCounts = {};
-    for (var vote in response) {
-      String targetId = vote['target_id'];
-      int voteCount = vote['vote_count'];
-      voteCounts[targetId] = voteCount;
-    }
-
-Future<void> refreshAlivePlayers() async {
-  final response = await supabase
-      .from('PLAYERS')
-      .select()
-      .eq('status', true); // Récupère uniquement les joueurs vivants
-
-  alivePlayers = (response as List).map((data) => Player.fromMap(data)).toList();
-
-  print("Liste mise à jour des joueurs vivants :");
-  for (var player in alivePlayers) {
-    print("ID : ${player.playerId}, Nom : ${player.name}");
-  }
-}
-
-await refreshAlivePlayers();
-
-    // Identifier le joueur éliminé
-String? eliminatedPlayerId;
-if (voteCounts.isNotEmpty) {
-  eliminatedPlayerId = voteCounts.entries.reduce((a, b) => a.value > b.value ? a : b).key;
-}
-
-if (eliminatedPlayerId != null) {
-  print("test $eliminatedPlayerId");
-
-  // Mettre à jour le statut du joueur dans la base de données
-  final updateResponse = await supabase
-    .from('PLAYERS')
-    .update({"status": false})
-    .eq('id', eliminatedPlayerId)
-    .select();
-
-print("Mise à jour dans la base de données : $updateResponse");
-
-// Rafraîchir la liste des joueurs vivants
-await refreshAlivePlayers();
-
-  print("test22222 $updateResponse");
-
-  // Vérifie si la mise à jour a fonctionné
-  if (updateResponse.isEmpty) {
-    print("Échec de la mise à jour du statut pour l'ID : $eliminatedPlayerId");
-    return;
-  } else {
-    print("Le joueur avec l'ID $eliminatedPlayerId a été marqué comme éliminé.");
-  }
-
-  // Vérifie la liste des joueurs vivants
-  print("Liste des joueurs vivants (alivePlayers) :");
-  for (var player in alivePlayers) {
-  }
-
-  // Trouve le joueur éliminé dans la liste locale
-  Player? eliminatedPlayer = alivePlayers.firstWhereOrNull(
-  (p) => p.playerId.trim() == eliminatedPlayerId!.trim(),
-  );
  
-for (var player in alivePlayers) {
-  // print("le player $player");
-  // print("ID joueur vivant : ${player.playerId}, Nom : ${player.getName()}");
-}
 
-
-  if (eliminatedPlayer != null) {
-    eliminatedPlayer.killed();
-    alivePlayers.remove(eliminatedPlayer);
-    deadPlayers.add(eliminatedPlayer);
-
-    print("${eliminatedPlayer.getName()} a été éliminé. Son rôle était : ${eliminatedPlayer.role.name}");
-  } else {
-    print("Aucun joueur correspondant trouvé pour l'ID : $eliminatedPlayerId dans la liste des vivants.");
-  }
-} else {
-  print("Aucun joueur n'a été éliminé (aucun vote majoritaire).");
-}
-  } catch (error) {
-    print("Erreur lors de la récupération des votes : $error");
-  }
-
-}
+ 
 }

@@ -29,7 +29,6 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
         textTheme: const TextTheme(

@@ -15,11 +15,17 @@ class GameSettingsScreen extends StatefulWidget {
 }
 
 class _GameSettingsScreenState extends State<GameSettingsScreen> {
+  late Future<void> _initFuture;
 
   @override
   void initState() {
     super.initState();
+    _initFuture = _initializeSettings();
+  }
+
+  Future<void> _initializeSettings() async {
     Globals.gameSettings = GameSettingsManager(300);
+    await Globals.gameSettings.initializeRoles();
   }
 
   @override
@@ -28,183 +34,163 @@ class _GameSettingsScreenState extends State<GameSettingsScreen> {
       appBar: AppBar(
         title: const Text('Paramètres de la partie'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Text('Nombre de joueurs',
-                  style: Theme.of(context).textTheme.bodyMedium),
-              Counter(
-                  valueCounter: Globals.gameSettings.players.toString(),
-                  addCounter: () => setState(() => Globals.gameSettings.addPlayer()),
-                  removeCount: () =>
-                      setState(() => Globals.gameSettings.removePlayer()))
-            ]),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Text('Durée du vote (en secondes)',
-                  style: Theme.of(context).textTheme.bodyMedium),
-              Counter(
-                  valueCounter: Globals.gameSettings.voteDurations.toString(),
-                  addCounter: () => setState(() => Globals.gameSettings.addTime()),
-                  removeCount: () => setState(() => Globals.gameSettings.removeTime()))
-            ]),
-            Text('Choisissez les rôles de la partie',
-                style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 20),
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // Nombre de colonnes
-                  crossAxisSpacing: 10.0,
-                  mainAxisSpacing: 10.0,
-                  childAspectRatio: 1, // Ajustez ce ratio selon vos besoins
-                ),
-                itemCount: Globals.gameSettings.roles.length,
-                itemBuilder: (context, index) {
-                  final role = Globals.gameSettings.roles[index];
-                  return GestureDetector(
-                    onTap: () => setState(() {
-                      if (Globals.gameSettings.rolesSelected.contains(role)) {
-                        Globals.gameSettings.removeRole(role);
-                      } else {
-                        Globals.gameSettings.addRole(role);
-                      }
-                    }),
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: Globals.gameSettings.rolesSelected.contains(role)
-                              ? yellow
-                              : Colors.transparent,
-                          width: 2,
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.info),
-                                onPressed: () {
-                                  _showRoleDetails(context, role);
-                                },
-                              ),
-                            ],
-                          ),
-                          Text(
-                            role.name,
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          if (role.name == 'Villageois') ...[
-                            Text(Globals.gameSettings.villagers.toString()),
-                          ],
-                          if (role.name == 'Loup-Garou') ...[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Counter(
-                                    valueCounter:
-                                        Globals.gameSettings.nbWolves.toString(),
-                                    addCounter: () {
-                                      setState(() {
-                                        print("test");
-                                        if (Globals.gameSettings.getRoleCount('Villageois') >0) {
-                                          print('pqsoicj');
-                                          Globals.gameSettings.addWolf();
-                                        }
-                                      });
-                                    },
-                                    removeCount: () {
-                                      setState(() {
-                                        if (Globals.gameSettings.wolves > 1) {
-                                          Globals.gameSettings.removeWolf();
-                                        }
-                                      });
-                                    })
-                              ],
-                            ),
-                          ] else ...[
-                            if (role.name != 'Villageois') ...[
-                              Counter(
-                                  valueCounter: Globals.gameSettings
-                                      .getRoleCount(role.name)
-                                      .toString(),
-                                  addCounter: () {
-                                    setState(() {
-                                      if (Globals.gameSettings.getRoleCount(role.name) <
-                                              1 &&
-                                          Globals.gameSettings
-                                                  .getRoleCount("Villageois") >
-                                              1) {
-                                        Globals.gameSettings.addRole(role);
-                                        Globals.gameSettings.villagers--;
-                                      }
-                                    });
-                                  },
-                                  removeCount: () {
-                                    setState(() {
-                                      if (Globals.gameSettings.getRoleCount(role.name) >
-                                          0) {
-                                        Globals.gameSettings.removeRole(role);
-                                        Globals.gameSettings.villagers++;
-                                      }
-                                    });
-                                  })
-                            ]
-                          ]
-                        ],
-                      ),
-                    ),
-                  );
-                },
+      body: FutureBuilder<void>(
+        future: _initFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                "Erreur lors de l'initialisation : ${snapshot.error}",
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
-            ),
-            TextButton(
-                onPressed: () {
-                  final sm = ScaffoldMessenger.of(context);
+            );
+          }
 
-                  try {
-                    final String codeGame = randomAlphaNumeric(6).toUpperCase();
-
-                    createGame(
-                        context,
-                        {
-                          'loups': Globals.gameSettings.wolves,
-                          'villageois': Globals.gameSettings.villagers,
-                          'nbJoueurs': Globals.gameSettings.players,
-                          'voteDuration': Globals.gameSettings.voteDuration,
-                          'rolesSelected': Globals.gameSettings.rolesSelected
-                        },
-                        codeGame);
-                        Globals.gameCode = codeGame;
-                    // ignore: use_build_context_synchronously
-                    Navigator.pushNamed(context, '/waitingScreen',
-                        arguments: {'isHost': true});
-                  } catch (e) {
-                    sm.showSnackBar(SnackBar(
-                        content: Text(
-                            "Erreur lors de la création de la partie: $e")));
-                  }
-                },
-                child: const Text('Créer une partie'))
-          ],
-        ),
+          // Construire l'interface une fois l'initialisation terminée
+          return _buildGameSettingsContent(context);
+        },
       ),
     );
   }
 
-  // Méthode pour afficher les détails d'un rôle
+  Widget _buildGameSettingsContent(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildCounterRow(
+            context,
+            'Nombre de joueurs',
+            Globals.gameSettings.players.toString(),
+            () => setState(() => Globals.gameSettings.addPlayer()),
+            () => setState(() => Globals.gameSettings.removePlayer()),
+          ),
+          _buildCounterRow(
+            context,
+            'Durée du vote (en secondes)',
+            Globals.gameSettings.voteDuration.toString(),
+            () => setState(() => Globals.gameSettings.addTime()),
+            () => setState(() => Globals.gameSettings.removeTime()),
+          ),
+          Text('Choisissez les rôles de la partie',
+              style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: 20),
+          Expanded(
+            child: _buildRolesGrid(context),
+          ),
+          TextButton(
+            onPressed: () => _createGame(context),
+            child: const Text('Créer une partie'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCounterRow(BuildContext context, String label, String value,
+      VoidCallback onAdd, VoidCallback onRemove) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label, style: Theme.of(context).textTheme.bodyMedium),
+        Counter(
+          valueCounter: value,
+          addCounter: onAdd,
+          removeCount: onRemove,
+        ),
+      ],
+    );
+  }
+
+Widget _buildRolesGrid(BuildContext context) {
+  return GridView.builder(
+    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 3, // Nombre de colonnes
+      crossAxisSpacing: 5.0,
+      mainAxisSpacing: 5.0,
+      childAspectRatio: 1, // Proportion largeur/hauteur
+    ),
+    itemCount: Globals.gameSettings.roles.length,
+    itemBuilder: (context, index) {
+      final role = Globals.gameSettings.roles[index];
+      final isSelected = Globals.gameSettings.rolesSelected.contains(role);
+
+      // Retourner le widget correctement
+      return Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: isSelected ? yellow : Colors.transparent,
+            width: 2,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            _buildRoleInfoButton(context, role),
+            Text(
+              role.name,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Counter(
+              valueCounter:
+                  Globals.gameSettings.getRoleCount(role.name).toString(),
+              addCounter: () => setState(() {
+                Globals.gameSettings.toggleRole(role, true);
+              }),
+              removeCount: () => setState(() {
+                Globals.gameSettings.toggleRole(role, false);
+              }),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+  Widget _buildRoleInfoButton(BuildContext context, RoleAction role) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        IconButton(
+          icon: const Icon(Icons.info),
+          onPressed: () {
+            _showRoleDetails(context, role);
+          },
+        ),
+      ],
+    );
+  }
+
+  Future<void> _createGame(BuildContext context) async {
+    final sm = ScaffoldMessenger.of(context);
+
+    try {
+      final String codeGame = randomAlphaNumeric(6).toUpperCase();
+      await createGame(context, Globals.gameSettings, codeGame);
+      Globals.gameCode = codeGame;
+
+      // Naviguer vers l'écran d'attente
+      if (mounted) {
+        Navigator.pushNamed(context, '/waitingScreen',
+            arguments: {'isHost': true});
+      }
+    } catch (e) {
+      sm.showSnackBar(
+        SnackBar(content: Text("Erreur lors de la création de la partie: $e")),
+      );
+    }
+  }
+
   void _showRoleDetails(BuildContext context, RoleAction role) {
     showDialog(
       context: context,
