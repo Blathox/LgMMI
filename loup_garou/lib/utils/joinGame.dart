@@ -49,7 +49,8 @@ Future<bool> joinGame(BuildContext context, String code) async {
         .from('GAMES')
         .update({'users': existingUsers})
         .eq('game_code', code)
-        .select(); 
+        .select('id').single(); 
+      Globals.gameId= updateResponse['id'];
 
     if (updateResponse.isEmpty) {
       sm.showSnackBar(

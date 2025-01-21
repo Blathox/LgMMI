@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:loup_garou/game_logic/game_manager.dart';
 import 'package:loup_garou/game_logic/roles.dart';
@@ -96,6 +98,7 @@ class _GameScreenState extends State<GameScreen> {
 
       // Attribuer les rôles et commencer le jeu
       Globals.gameManager.attribuerRoles();
+      Globals.supabase.from('PLAYERS').insert({'game_id':Globals.gameId,'user_id': Globals.userId,'role': Globals.playerManager.getPlayerById(Globals.userId).getRole().getName,'status':true,'killedatnight':false});
       print('test');
       Globals.gameManager.processGame(context);
       

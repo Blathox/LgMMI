@@ -48,6 +48,7 @@ class GameManager {
   }
     void startGame(BuildContext context, String gameId) async {
       isRunning = true;
+      // ignore: avoid_print
       print(isRunning);
     // gamePhase.currentPhase = Phase.Night;
 
