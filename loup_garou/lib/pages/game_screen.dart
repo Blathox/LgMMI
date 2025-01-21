@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:loup_garou/game_logic/game_manager.dart';
 import 'package:loup_garou/game_logic/roles.dart';
@@ -20,7 +21,6 @@ class _GameScreenState extends State<GameScreen> {
     super.didChangeDependencies();
     _initializeGame();
   }
-
   Future<void> _initializeGame() async {
     try {
       // Initialisation des rôles en fonction des paramètres du jeu

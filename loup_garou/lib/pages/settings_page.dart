@@ -4,7 +4,7 @@ import 'package:loup_garou/utils/signOut.dart';
 import 'package:loup_garou/utils/user_service.dart';
 
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+  const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +126,7 @@ class SettingsPage extends StatelessWidget {
 }
 
 class AccountPage extends StatefulWidget {
-  const AccountPage({Key? key}) : super(key: key);
+  const AccountPage({super.key});
 
   @override
   _AccountPageState createState() => _AccountPageState();
@@ -147,14 +147,12 @@ class _AccountPageState extends State<AccountPage> {
   Future<void> _fetchUserData() async {
     try {
       final data = await _userService.fetchUserData();
-      if (data != null) {
-        setState(() {
-          pseudo = data['username'] ?? 'Utilisateur non trouvé';
-          email = data['email'] ?? 'Email non trouvé';
-          creationDate = data['creationDate'] ?? 'Date non trouvée';
-        });
-      }
-    } catch (e) {
+      setState(() {
+        pseudo = data['username'] ?? 'Utilisateur non trouvé';
+        email = data['email'] ?? 'Email non trouvé';
+        creationDate = data['creationDate'] ?? 'Date non trouvée';
+      });
+        } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erreur : $e')),
       );
@@ -294,7 +292,7 @@ class _AccountPageState extends State<AccountPage> {
 }
 
 class SettingsDetailPage extends StatelessWidget {
-  const SettingsDetailPage({Key? key}) : super(key: key);
+  const SettingsDetailPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -346,7 +344,7 @@ class SettingsDetailPage extends StatelessWidget {
 
 // Boite de dialog pour la déconnexion
 Future<void> showLogoutConfirmationDialog(BuildContext context) async {
-  final shouldLogout = await showDialog<bool>(
+  final bool? shouldLogout = await showDialog<bool>(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
@@ -354,19 +352,22 @@ Future<void> showLogoutConfirmationDialog(BuildContext context) async {
         content: const Text('Êtes-vous sûr de vouloir vous déconnecter ?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
+            onPressed: () => Navigator.pop(context, false), // Ferme le dialog sans action
             child: const Text('Annuler'),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () {
+              Navigator.pop(context, true); // Ferme et confirme la déconnexion
+            },
             child: const Text('Se déconnecter'),
           ),
         ],
       );
     },
-  ) ?? false;
+  );
 
-  if (shouldLogout) {
-    await signOut();
+  // Si l'utilisateur confirme la déconnexion, effectuer la déconnexion
+  if (shouldLogout == true) {
+    await signOut(context);
   }
 }

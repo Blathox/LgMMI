@@ -1,12 +1,12 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:loup_garou/game_logic/game_settings_manager.dart';
 import 'package:loup_garou/game_logic/players_manager.dart';
 import 'package:loup_garou/visuals/variables.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../game_logic/player.dart';
+import 'package:loup_garou/game_logic/game_settings_manager.dart';
+import 'package:loup_garou/game_logic/player.dart';
 
 class WaitingScreen extends StatefulWidget {
   const WaitingScreen({super.key});

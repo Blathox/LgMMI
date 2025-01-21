@@ -61,13 +61,13 @@ class UserService {
           .select();
 
       // Vérification de la réponse
-      if (response == null || response.isEmpty) {
+      if (response.isEmpty) {
         return {'error': 'Mise à jour échouée, aucune donnée retournée'};
       }
 
       // Retourner la première ligne mise à jour
-      if (response is List && response.isNotEmpty) {
-        return response.first as Map<String, dynamic>;
+      if (response.isNotEmpty) {
+        return response.first;
       }
 
       return {'error': 'Type de réponse inattendu'};

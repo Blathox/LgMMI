@@ -1,8 +1,9 @@
 import 'package:loup_garou/game_logic/roles.dart';
 
 class Player {
-  String name; // Nom du joueur
-  RoleAction role; // Rôle attribué au joueur
+  String idPlayer = '';
+  String name;
+  late RoleAction role;
   late String roleName;
   bool isAlive; // Statut : vivant ou mort
   int voteCount = 0; // Nombre de votes reçus
