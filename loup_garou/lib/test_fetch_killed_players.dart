@@ -14,7 +14,7 @@ Future<void> main() async {
     final response = await supabase
         .from('PLAYERS')
         .select('name, role')
-        .eq('killedAtNight', true);
+        .eq('killedatnight', true);
 
     if (response.isEmpty) {
       print("Aucun joueur n'a été tué cette nuit.");

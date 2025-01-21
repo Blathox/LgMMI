@@ -18,6 +18,12 @@ class Player {
   String get playerId => idPlayer;
   set playerId(String id) => idPlayer = id;
 
+static Player fromMap(Map<String, dynamic> map) {
+    return Player(
+      map['username'] ?? '', // Assurez-vous que la clé correspond à vos colonnes
+      map['status'] ?? false, // Supposons que 'status' indique si le joueur est vivant
+    )..playerId = map['id']; // Ajoutez d'autres champs si nécessaire
+  }
   // Méthodes pour gérer l'état du joueur
   void killed() {
     isAlive = false;
