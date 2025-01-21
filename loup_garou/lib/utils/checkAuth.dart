@@ -1,4 +1,5 @@
 
+import 'package:loup_garou/visuals/variables.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<bool> checkAuth() async {
@@ -23,15 +24,13 @@ Future<bool> checkAuth() async {
     final List<dynamic> idList = await supabase.from('USERS').select('id').eq('id_user', idUser);
     var id = idList[0];
     id= id['id'];
+    Globals.userId= id;
  
    final stats = await supabase.from('STATISTICS').select().eq('id_user',id);
    print("stats: $stats");
-    if(stats.isEmpty){
-      print("test");
-       await supabase.from('STATISTICS').insert({
+    if(stats.isEmpty){await supabase.from('STATISTICS').insert({
       'games_played': 0,
-      'victories_as_villager': 0,
-      'victories_as_werewolf': 0,
+      'victories': 0,
       'last_game_at': null,
       'id_user': id
     });

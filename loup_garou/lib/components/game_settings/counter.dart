@@ -35,6 +35,7 @@ class _CounterState extends State<Counter> {
           icon: const Icon(Icons.add),
           
           onPressed: () {
+            
             widget.addCounter();
           },
         ),

@@ -9,32 +9,26 @@ class GameSettingsManager {
    int voteDuration; // Add a semicolon here
   final List<RoleAction> roles = [
     LoupGarou(
-      name: 'Loup-Garou',
       description: 'Un rôle de loup-garou',
       order: 5,
     ),
     Villageois(
-        name: 'villageois',
         description:
             "Le villageois n'a pas de rôle particulier pendant la nuit, il doit trouver et éliminer les loups lors du vote du village",
         order: 0),
     Sorciere(
-      name: 'Sorcière',
       description: 'Un rôle de sorcière',
       order: 3,
     ),
     Chasseur(
-      name: 'Chasseur',
       description: 'Un rôle de chasseur',
       order: 4,
     ),
     Cupidon(
-      name: 'Cupidon',
       description: 'Un rôle de cupidon',
       order: 1,
     ),
     Voyante(
-      name: 'Voyante',
       description: 'Un rôle de voyante',
       order: 2,
     ),
@@ -42,12 +36,10 @@ class GameSettingsManager {
   late List<RoleAction> rolesSelected;
   String codeGame= '';
   LoupGarou loupGarou = LoupGarou(
-    name: 'Loup-Garou',
     description: 'Un loup-garou qui attaque les villageois.',
     order: 1, // Set the appropriate order value
   );
   Villageois villager = Villageois(
-      name: 'villageois',
       description:
           "Le villageois n'a pas de rôle particulier pendant la nuit, il doit trouver et éliminer les loups lors du vote du village",
       order: 0);
@@ -134,8 +126,10 @@ class GameSettingsManager {
   }
 
   void addWolf() {
+    print('test');
     addRole(loupGarou);
     removeRole(villager);
+    print(nbWolves);
     nbWolves++;
     nbVillagers--;
   }
