@@ -207,8 +207,8 @@ void _showGameCodeDialog(BuildContext context) {
                   '/waitingScreen',
                   arguments: { 'isHost': true},
                 ); 
-                }
-               
+                
+
               } catch (e) {
                 if (gameCode.isNotEmpty) {
                   Navigator.of(context).pop(); // Fermer le dialogue
