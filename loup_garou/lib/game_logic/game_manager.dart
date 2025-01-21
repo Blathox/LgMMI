@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:loup_garou/game_logic/game_settings_manager.dart';
 import 'package:loup_garou/game_logic/player.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+// import '../screens/chat_screen.dart';
 import 'package:loup_garou/game_logic/players_manager.dart';
 import 'package:loup_garou/game_logic/roles.dart';
 
@@ -9,38 +12,58 @@ import 'phases.dart';
 
 class GameManager {
   GamePhase gamePhase = GamePhase();
-  GameSettingsManager gameSettings = GameSettingsManager(6);
   List<RoleAction> roles = [];
   List<RoleAction> rolesAttribued = [];
-  List<Player> players = [];
   List<Player> alivePlayers = [];
   List<Player> deadPlayers = [];
   List<Player> loversPlayers = [];
+  bool isRunning = false;
   bool isWin = false;
+  ValueNotifier<String> messageNotifier = ValueNotifier<String>("");
+
   PlayersManager playersM = PlayersManager();
 
   final supabase = Supabase.instance.client;
 
-  GameManager(this.gameSettings) {
-    roles = gameSettings.roles;
+  GameManager(this.roles) {
+    
+    roles = roles;
     rolesAttribued = [];
   }
+  get getRoles => roles;
+  get getRolesAttribued => rolesAttribued;
+  set setRoles(List<RoleAction> roles) {
+    this.roles = roles;
+  }
+  set playersManager(PlayersManager playersManager) {
+    playersM = playersManager;
+  }
 
-  void startGame(BuildContext context, String gameId) async {
-    print("Attribution des rôles");
-    roles.shuffle();
-    for (int i = 0; i < playersM.playerList.length; i++) {
+  // Getter pour accéder au message
+  String get getMessage => messageNotifier.value;
 
-      playersM.playerList[i].setRole(roles[i]);
-      rolesAttribued.add(roles[i]);
-      roles.remove(roles[i]);
-    }
-    rolesAttribued.sort((a, b) => a.order.compareTo(b.order));
+  // Méthode pour mettre à jour le message
+  void updateMessage(String newMessage) {
+    messageNotifier.value = newMessage; // Notifie automatiquement les listeners
+  }
+    void startGame(BuildContext context, String gameId) async {
+      isRunning = true;
+      print(isRunning);
+    // gamePhase.currentPhase = Phase.Night;
 
-    gamePhase.currentPhase = Phase.Night;
+    // await processNightActions(context);
+    // await processDayActions(context, gameId);
+  }
+  void processGame(BuildContext context) async {
+      gamePhase.switchPhase();
+      print("Phase actuelle : ${gamePhase.currentPhase}");
+      // if(gamePhase.currentPhase == Phase.Night){
+        await processNightActions(context);
+    //   }else if(gamePhase.currentPhase == Phase.Day){
+    //     // await processDayActions(context, 'gameId');
+      
+    // }
 
-    await processNightActions(context);
-    await processDayActions(context, gameId);
   }
 
   Future<List<Map<String, dynamic>>> fetchKilledPlayers() async {
@@ -59,6 +82,7 @@ class GameManager {
       return [];
     }
   }
+
 
   Future<int> fetchVoteDuration(String gameId) async {
     try {
@@ -81,23 +105,39 @@ class GameManager {
   }
 
   Future<void> processNightActions(BuildContext context) async {
-    print("Phase de nuit : Les rôles effectuent leurs actions.");
+    updateMessage("Le village s'endort");
+    print('test $rolesAttribued');
     for (RoleAction role in rolesAttribued) {
+      print("Action du rôle : ${role.getName}");
       role.performAction(context, playersM);
     }
     print("Fin de la phase de nuit.");
   }
+void attribuerRoles(){
+    updateMessage("Attribution des rôles");
+    print('attribution roles $roles');
+    print(playersM.playerList.length);
+    print(playersM.playerList);
+    roles.shuffle();
+    for (int i = 0; i < playersM.playerList.length; i++) {
+      playersM.playerList[i].setRole(roles[i]);
+      print('roles ${roles[i].getName}');
+      rolesAttribued.add(roles[i]);
+      roles.remove(roles[i]);
+    }
+    rolesAttribued.sort((a, b) => a.order.compareTo(b.order));
+   updateMessage("Les rôles ont été attribués");
+  }
+//   Future<void> processDayActions(BuildContext context, String gameId) async {
+//     print("Le village se réveille...");
 
-  Future<void> processDayActions(BuildContext context, String gameId) async {
-    print("Le village se réveille...");
-
-    // Annonce des joueurs tués
-    Future<List<Map<String, dynamic>>> fetchKilledPlayers() async {
-  try {
-    final response = await supabase
-        .from('PLAYERS')
-        .select('id, name, role')
-        .eq('killedAtNight', true);
+//     // Annonce des joueurs tués
+//     Future<List<Map<String, dynamic>>> fetchKilledPlayers() async {
+//   try {
+//     final response = await supabase
+//         .from('PLAYERS')
+//         .select('id, name, role')
+//         .eq('killedAtNight', true);
 
     if (response.isEmpty) {
       return [];
@@ -108,29 +148,32 @@ class GameManager {
     return [];
   }
 }
-}
+  
+    // Phase de discussion avec le chat
+    // openChatScreen(context, gameId);
 
-  void addPlayer(Player player) {
-    players.add(player);
+    // Récupérer la durée de vote
+    int voteDuration = await fetchVoteDuration(gameId);
+    print("Durée de la phase de vote : $voteDuration secondes.");
+
+    // Attendre la fin de la durée configurée
+    await Future.delayed(Duration(seconds = voteDuration));
+    print("Fin de la phase de vote.");
+
+    // Passer à la phase suivante
+    gamePhase.switchPhase();
   }
 
-  void removePlayer(Player player) {
-    players.remove(player);
-  }
+  // void openChatScreen(BuildContext context, String gameId) {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => ChatScreen(gameId: gameId, playerId: playersM.playerList[0].id), // Exemple
+  //     ),
+  //   );
+  // }
 
-  Player? getPlayerByName(String name) {
-    for (Player player in players) {
-      if (player.name == name) {
-        return player;
-      }
-    }
-    return null;
-  }
+ 
 
-  void addPlayerLinked(Player player1, Player player2) {
-    player1.isLinked = true;
-    player2.isLinked = true;
-    loversPlayers.add(player1);
-    loversPlayers.add(player2);
-  }
+ 
 }

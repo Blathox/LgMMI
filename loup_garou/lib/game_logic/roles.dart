@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:loup_garou/game_logic/player.dart';
 import 'package:loup_garou/game_logic/players_manager.dart';
+import 'package:loup_garou/visuals/variables.dart';
 
 // Classe abstraite pour tous les rôles
 abstract class RoleAction {
-  final String name;
+  final String name= '';
   final int order;
   final String description;
 
   RoleAction({
-    required this.name,
     required this.description,
     required this.order,
   });
+  get getName => name;
 
   void performAction(BuildContext context, PlayersManager playersManager);
 
@@ -21,69 +22,93 @@ abstract class RoleAction {
 
 // Classe Villageois
 class Villageois extends RoleAction {
+  @override
+  String name;
+
   Villageois({
-    required super.name,
     required super.description,
     required super.order,
-  });
+    this.name = 'Villageois', // Default name
+  }) {
+    print('Villageois created with name: $name');
+  }
+
+  @override
+  String get getName => name;
 
   @override
   void performAction(BuildContext context, PlayersManager playersManager) {
     print("Le Villageois participe aux votes pour éliminer un joueur.");
+    // Add game logic related to voting here if necessary.
   }
 }
+
 
 // Classe Loup-Garou
 class LoupGarou extends RoleAction {
   List<String> availableTargets = [];
   String? chosenTarget;
+    @override
+  String name = 'Loup-Garou';
+
 
   LoupGarou({
-    required super.name,
     required super.description,
     required super.order,
   });
-
-  @override
-  void performAction(BuildContext context, PlayersManager playersManager) {
-    if (availableTargets.isEmpty) {
-      print("Aucune cible disponible pour les Loups-Garous.");
-      return;
-    }
-
-    if (chosenTarget == null) {
-      print("Le Loup-Garou doit choisir une cible.");
-      return;
-    }
-
-    print("Le Loup-Garou attaque $chosenTarget !");
-    eliminateTarget(chosenTarget!);
-  }
-
-  void setAvailableTargets(List<String> players) {
-    availableTargets = players;
-    print("Cibles disponibles pour les Loups-Garous : ${availableTargets.join(', ')}");
-  }
-
-  void selectTarget(String targetName) {
+void selectTarget(String targetName) {
     if (!availableTargets.contains(targetName)) {
       print("$targetName n'est pas une cible valide.");
       return;
     }
     chosenTarget = targetName;
     print("Le Loup-Garou a choisi d'attaquer : $targetName");
+    eliminateTarget(targetName);
+  }
+    void eliminateTarget(String targetName) {
+    print("$targetName a été ciblée par les Loups-Garous.");
+    Globals.playerManager.getPlayerByName(targetName)?.isTargeted= true;
   }
 
-  void eliminateTarget(String targetName) {
-    print("$targetName a été éliminé par les Loups-Garous.");
-    // Logique pour mettre à jour l'état du joueur dans le jeu.
-  }
-}
+  @override
+  void performAction(BuildContext context, PlayersManager playersManager) {
+    availableTargets = playersManager.alivePlayers.map((player) => player.getName()).toList();
+    if (availableTargets.isEmpty) {
+      print("Aucune cible disponible pour les Loups-Garous.");
+      return;
+    }
+
+    showDialog(context: context, builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text("Les Loups-Garous se reveillent"),
+        content: const Text("Choisissez une cible parmi les joueurs suivants"),
+        actions: availableTargets.map((target) {
+          return TextButton(
+            onPressed: () {
+              selectTarget(target);
+              Navigator.of(context).pop();
+            },
+            child: Text(target),
+          );
+        }).toList(),
+        );
+  });}
+
+  void setAvailableTargets(List<String> players) {
+    availableTargets = players;
+    print("Cibles disponibles pour les Loups-Garous : ${availableTargets.join(', ')}");
+  }}
+
+  
+
+
 
 // Classe Sorcière (hérite de Villageois)
 class Sorciere extends Villageois {
+  @override
+  String name = 'Sorciere';
+
   Sorciere({
-    required super.name,
     required super.description,
     required super.order,
   });
@@ -162,8 +187,10 @@ class Sorciere extends Villageois {
 
 // Classe Chasseur (hérite de Villageois)
 class Chasseur extends Villageois {
+    @override
+  String name = 'Chasseur';
+
   Chasseur({
-    required super.name,
     required super.description,
     required super.order,
   });
@@ -200,8 +227,10 @@ class Chasseur extends Villageois {
 
 // Classe Cupidon (hérite de Villageois)
 class Cupidon extends Villageois {
+    @override
+  String name = 'Cupidon';
+
   Cupidon({
-    required super.name,
     required super.description,
     required super.order,
   });
@@ -248,8 +277,10 @@ class Cupidon extends Villageois {
 
 // Classe Voyante (hérite de Villageois)
 class Voyante extends Villageois {
+    @override
+  String name = 'Voyante';
+
   Voyante({
-    required super.name,
     required super.description,
     required super.order,
   });

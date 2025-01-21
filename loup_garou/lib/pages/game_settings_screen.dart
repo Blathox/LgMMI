@@ -4,6 +4,7 @@ import 'package:loup_garou/game_logic/game_settings_manager.dart';
 import 'package:loup_garou/game_logic/roles.dart';
 import 'package:loup_garou/utils/createGame.dart';
 import 'package:loup_garou/visuals/colors.dart';
+import 'package:loup_garou/visuals/variables.dart';
 import 'package:random_string/random_string.dart';
 
 class GameSettingsScreen extends StatefulWidget {
@@ -14,12 +15,11 @@ class GameSettingsScreen extends StatefulWidget {
 }
 
 class _GameSettingsScreenState extends State<GameSettingsScreen> {
-  late final GameSettingsManager gameSettings;
 
   @override
   void initState() {
     super.initState();
-    gameSettings = GameSettingsManager(300);
+    Globals.gameSettings = GameSettingsManager(300);
   }
 
   @override
@@ -37,18 +37,18 @@ class _GameSettingsScreenState extends State<GameSettingsScreen> {
               Text('Nombre de joueurs',
                   style: Theme.of(context).textTheme.bodyMedium),
               Counter(
-                  valueCounter: gameSettings.players.toString(),
-                  addCounter: () => setState(() => gameSettings.addPlayer()),
+                  valueCounter: Globals.gameSettings.players.toString(),
+                  addCounter: () => setState(() => Globals.gameSettings.addPlayer()),
                   removeCount: () =>
-                      setState(() => gameSettings.removePlayer()))
+                      setState(() => Globals.gameSettings.removePlayer()))
             ]),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Text('Durée du vote (en secondes)',
                   style: Theme.of(context).textTheme.bodyMedium),
               Counter(
-                  valueCounter: gameSettings.voteDurations.toString(),
-                  addCounter: () => setState(() => gameSettings.addTime()),
-                  removeCount: () => setState(() => gameSettings.removeTime()))
+                  valueCounter: Globals.gameSettings.voteDurations.toString(),
+                  addCounter: () => setState(() => Globals.gameSettings.addTime()),
+                  removeCount: () => setState(() => Globals.gameSettings.removeTime()))
             ]),
             Text('Choisissez les rôles de la partie',
                 style: Theme.of(context).textTheme.titleLarge),
@@ -61,15 +61,15 @@ class _GameSettingsScreenState extends State<GameSettingsScreen> {
                   mainAxisSpacing: 10.0,
                   childAspectRatio: 1, // Ajustez ce ratio selon vos besoins
                 ),
-                itemCount: gameSettings.roles.length,
+                itemCount: Globals.gameSettings.roles.length,
                 itemBuilder: (context, index) {
-                  final role = gameSettings.roles[index];
+                  final role = Globals.gameSettings.roles[index];
                   return GestureDetector(
                     onTap: () => setState(() {
-                      if (gameSettings.rolesSelected.contains(role)) {
-                        gameSettings.removeRole(role);
+                      if (Globals.gameSettings.rolesSelected.contains(role)) {
+                        Globals.gameSettings.removeRole(role);
                       } else {
-                        gameSettings.addRole(role);
+                        Globals.gameSettings.addRole(role);
                       }
                     }),
                     child: Container(
@@ -78,7 +78,7 @@ class _GameSettingsScreenState extends State<GameSettingsScreen> {
                         color: Colors.grey[300],
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
-                          color: gameSettings.rolesSelected.contains(role)
+                          color: Globals.gameSettings.rolesSelected.contains(role)
                               ? yellow
                               : Colors.transparent,
                           width: 2,
@@ -106,8 +106,8 @@ class _GameSettingsScreenState extends State<GameSettingsScreen> {
                             ),
                           ),
                           const SizedBox(height: 10),
-                          if (role.name == 'villageois') ...[
-                            Text(gameSettings.villagers.toString()),
+                          if (role.name == 'Villageois') ...[
+                            Text(Globals.gameSettings.villagers.toString()),
                           ],
                           if (role.name == 'Loup-Garou') ...[
                             Row(
@@ -115,51 +115,49 @@ class _GameSettingsScreenState extends State<GameSettingsScreen> {
                               children: [
                                 Counter(
                                     valueCounter:
-                                        gameSettings.nbWolves.toString(),
+                                        Globals.gameSettings.nbWolves.toString(),
                                     addCounter: () {
                                       setState(() {
-                                        print(gameSettings
-                                            .getRoleCount('villageois'));
-                                        if (gameSettings
-                                                .getRoleCount('villageois') >
-                                            0) {
-                                          gameSettings.addWolf();
+                                        print("test");
+                                        if (Globals.gameSettings.getRoleCount('Villageois') >0) {
+                                          print('pqsoicj');
+                                          Globals.gameSettings.addWolf();
                                         }
                                       });
                                     },
                                     removeCount: () {
                                       setState(() {
-                                        if (gameSettings.wolves > 1) {
-                                          gameSettings.removeWolf();
+                                        if (Globals.gameSettings.wolves > 1) {
+                                          Globals.gameSettings.removeWolf();
                                         }
                                       });
                                     })
                               ],
                             ),
                           ] else ...[
-                            if (role.name != 'villageois') ...[
+                            if (role.name != 'Villageois') ...[
                               Counter(
-                                  valueCounter: gameSettings
+                                  valueCounter: Globals.gameSettings
                                       .getRoleCount(role.name)
                                       .toString(),
                                   addCounter: () {
                                     setState(() {
-                                      if (gameSettings.getRoleCount(role.name) <
+                                      if (Globals.gameSettings.getRoleCount(role.name) <
                                               1 &&
-                                          gameSettings
-                                                  .getRoleCount("villageois") >
+                                          Globals.gameSettings
+                                                  .getRoleCount("Villageois") >
                                               1) {
-                                        gameSettings.addRole(role);
-                                        gameSettings.villagers--;
+                                        Globals.gameSettings.addRole(role);
+                                        Globals.gameSettings.villagers--;
                                       }
                                     });
                                   },
                                   removeCount: () {
                                     setState(() {
-                                      if (gameSettings.getRoleCount(role.name) >
+                                      if (Globals.gameSettings.getRoleCount(role.name) >
                                           0) {
-                                        gameSettings.removeRole(role);
-                                        gameSettings.villagers++;
+                                        Globals.gameSettings.removeRole(role);
+                                        Globals.gameSettings.villagers++;
                                       }
                                     });
                                   })
@@ -182,16 +180,17 @@ class _GameSettingsScreenState extends State<GameSettingsScreen> {
                     createGame(
                         context,
                         {
-                          'loups': gameSettings.wolves,
-                          'villageois': gameSettings.villagers,
-                          'nbJoueurs': gameSettings.players,
-                          'voteDuration': gameSettings.voteDuration,
-                          'rolesSelected': gameSettings.rolesSelected
+                          'loups': Globals.gameSettings.wolves,
+                          'villageois': Globals.gameSettings.villagers,
+                          'nbJoueurs': Globals.gameSettings.players,
+                          'voteDuration': Globals.gameSettings.voteDuration,
+                          'rolesSelected': Globals.gameSettings.rolesSelected
                         },
                         codeGame);
+                        Globals.gameCode = codeGame;
                     // ignore: use_build_context_synchronously
                     Navigator.pushNamed(context, '/waitingScreen',
-                        arguments: {'gameCode': codeGame});
+                        arguments: {'isHost': true});
                   } catch (e) {
                     sm.showSnackBar(SnackBar(
                         content: Text(

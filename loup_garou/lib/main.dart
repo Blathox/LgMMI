@@ -41,6 +41,9 @@ class MyApp extends StatelessWidget {
         '/settingsGame': (context) =>  const GameSettingsScreen(),
         '/waitingScreen':(context)=>const WaitingScreen(),
         '/globalSettings':(context)=>const SettingsPage(),
+        '/rulesPage':(context) => const RulesPage(),
+        '/gameMode':(context)=>const ChoseGameMode(),
+        '/game':(context)=>GameScreen()
       },
       home: const LoginScreen(),
     );

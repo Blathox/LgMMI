@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-Future<void> joinGame(BuildContext context, String code) async {
+import '../visuals/variables.dart';
+
+Future<bool> joinGame(BuildContext context, String code) async {
   final supabase = Supabase.instance.client;
   final sm = ScaffoldMessenger.of(context);
 
@@ -9,7 +11,7 @@ Future<void> joinGame(BuildContext context, String code) async {
     // Vérifie si la partie existe avec le code donné
     final gameResponse = await supabase
         .from('GAMES')
-        .select('id, users')
+        .select()
         .eq('game_code', code)
         .single();
 
@@ -36,9 +38,9 @@ Future<void> joinGame(BuildContext context, String code) async {
       return;
     }
 
-    final userId = userResponse['id'];
+
     // Vérifie si l'utilisateur est déjà dans la liste
-    if (existingUsers.contains(userId)) {
+    if (existingUsers.contains(Globals.userId)) {
       sm.showSnackBar(
         const SnackBar(content: Text("Vous avez déjà rejoint cette partie")),
       );
@@ -46,11 +48,13 @@ Future<void> joinGame(BuildContext context, String code) async {
     }
 
     // Ajoute l'utilisateur à la partie
-    existingUsers.add(userId);
+    existingUsers.add(Globals.userId);
+
     final updateResponse = await supabase
         .from('GAMES')
         .update({'users': existingUsers})
-        .eq('game_code', code);
+        .eq('game_code', code)
+        .select(); 
 
     if (updateResponse.error != null) {
       sm.showSnackBar(
