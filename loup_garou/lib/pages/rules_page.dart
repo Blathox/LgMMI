@@ -123,7 +123,7 @@ class _RulesPageState extends State<RulesPage> {
         ),
         const SizedBox(height: 10),
         const Text(
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
+          'Le Loup-Garou est un jeu de rôle et de déduction où les joueurs incarnent des Villageois, des Loups-Garous ou des personnages spéciaux, le jeu alterne entre la Nuit, où les Loups-Garous désignent secrètement une victime et où certains personnages spéciaux utilisent leurs pouvoirs, et le Jour, où tous les joueurs débattent et votent pour éliminer un suspect, l’objectif des Villageois est de découvrir et éliminer tous les Loups-Garous, tandis que ces derniers cherchent à éliminer suffisamment de Villageois pour devenir majoritaires, le jeu prend fin lorsque l’un des deux camps atteint son objectif.',
           style: TextStyle(fontSize: 16),
         ),
         const SizedBox(height: 20),
