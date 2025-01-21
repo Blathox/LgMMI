@@ -200,9 +200,8 @@ void _showGameCodeDialog(BuildContext context) {
             onPressed: () async {
               final gameCode = codeController.text.trim();
               try {
-                bool response = await joinGame(context, gameCode);
-                if(response){
-                  Navigator.pushNamed(
+                await joinGame(context, gameCode);
+                Navigator.pushNamed(
                   // ignore: use_build_context_synchronously
                   context,
                   '/waitingScreen',

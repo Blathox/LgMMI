@@ -9,18 +9,10 @@ class Player {
   int voteCount = 0;
   bool isLinked = false;
   bool isTargeted = false;
-  String idPlayer= '';
   Player(this.name, this.isAlive){
     role = Villageois(description: '', order: 0);
   }
 
-  set setIdPlayer(String id){
-    idPlayer = id;
-  }
-  String get playerId{
-    return idPlayer;
-  }
-  
   void killed() {
     isAlive = false;
     print('$name a été tué.');

@@ -15,22 +15,27 @@ Future<bool> joinGame(BuildContext context, String code) async {
         .eq('game_code', code)
         .single();
 
-    if (gameResponse['id'] == null || gameResponse['users'] == null) {
+    if (gameResponse['id'] == null) {
       sm.showSnackBar(
         const SnackBar(content: Text("Code de partie invalide")),
       );
-      return false;
+      return;
     }
 
-    final existingUsers = List<String>.from(gameResponse['users'] ?? []);
+    final existingUsers = gameResponse['users'] as List<dynamic>? ?? [];
 
     // Vérifie l'utilisateur actuel
-    final currentUser = supabase.auth.currentUser;
-    if (currentUser == null) {
+    final userResponse = await supabase
+        .from('USERS')
+        .select('id')
+        .eq('id_user', supabase.auth.currentUser!.id)
+        .single();
+
+    if (userResponse['id'] == null) {
       sm.showSnackBar(
-        const SnackBar(content: Text("Utilisateur non authentifié")),
+        const SnackBar(content: Text("Utilisateur introuvable")),
       );
-      return false;
+      return;
     }
 
 
@@ -39,7 +44,7 @@ Future<bool> joinGame(BuildContext context, String code) async {
       sm.showSnackBar(
         const SnackBar(content: Text("Vous avez déjà rejoint cette partie")),
       );
-      return true;
+      return;
     }
 
     // Ajoute l'utilisateur à la partie
@@ -51,21 +56,19 @@ Future<bool> joinGame(BuildContext context, String code) async {
         .eq('game_code', code)
         .select(); 
 
-    if (updateResponse.isEmpty) {
+    if (updateResponse.error != null) {
       sm.showSnackBar(
-        const SnackBar(content: Text("Erreur lors de la mise à jour de la partie")),
+        SnackBar(content: Text("Erreur : ${updateResponse.error!.message}")),
       );
-      return false;
+      return;
     }
     Globals.gameCode = code;
     sm.showSnackBar(
       SnackBar(content: Text("Partie rejointe avec succès ! Code : $code")),
     );
-    return true;
   } catch (e) {
     sm.showSnackBar(
       SnackBar(content: Text("Erreur inattendue : $e")),
     );
-    return false;
   }
 }
