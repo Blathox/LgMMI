@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:loup_garou/visuals/colors.dart';
-import 'package:loup_garou/utils/fetchRoles.dart';
+import 'package:loup_garou/game_logic/roles.dart'; // Import des classes de rôles
 
 class RulesPage extends StatefulWidget {
   const RulesPage({super.key});
@@ -13,12 +13,21 @@ class RulesPage extends StatefulWidget {
 class _RulesPageState extends State<RulesPage> {
   bool _showRules = true;
   final List<bool> _expandedRoles = [];
-  late final Future<List<Map<String, dynamic>>> _rolesFuture;
+
+  // Liste des rôles (instanciés à partir de leurs classes)
+  final List<RoleAction> _roles = [
+    Villageois(description: "Un simple villageois qui participe aux votes.", order: 0),
+    LoupGarou(description: "Élimine les villageois chaque nuit sans se faire démasquer.", order: 1),
+    Sorciere(description: "Possède deux potions pour sauver ou éliminer un joueur.", order: 2),
+    Chasseur(description: "Peut éliminer un joueur avant de mourir.", order: 3),
+    Cupidon(description: "Lie deux joueurs par les liens de l’amour.", order: 4),
+    Voyante(description: "Peut découvrir le rôle d’un joueur chaque nuit.", order: 5),
+  ];
 
   @override
   void initState() {
     super.initState();
-    _rolesFuture = fetchRoles();
+    _expandedRoles.addAll(List.generate(_roles.length, (_) => false));
   }
 
   @override
@@ -123,7 +132,7 @@ class _RulesPageState extends State<RulesPage> {
         ),
         const SizedBox(height: 10),
         const Text(
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
+          'Le Loup-Garou est un jeu de rôle et de déduction où les joueurs incarnent des Villageois, des Loups-Garous ou des personnages spéciaux...',
           style: TextStyle(fontSize: 16),
         ),
         const SizedBox(height: 20),
@@ -150,57 +159,30 @@ class _RulesPageState extends State<RulesPage> {
   }
 
   Widget _buildRolesContent() {
-    return FutureBuilder<List<Map<String, dynamic>>>(
-      future: _rolesFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (snapshot.hasError) {
-          return Center(child: Text('Erreur: ${snapshot.error}'));
-        }
-
-        final roles = snapshot.data ?? [];
-        if (roles.isEmpty) {
-          return const Center(child: Text('Aucun rôle trouvé.'));
-        }
-
-        _ensureExpandedStatesInitialized(roles.length);
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            const Text(
-              'Rôles dans le jeu',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.orange,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: ListView.builder(
-                itemCount: roles.length,
-                itemBuilder: (context, index) => _buildRoleItem(roles[index], index),
-              ),
-            ),
-          ],
-        );
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 20),
+        const Text(
+          'Rôles dans le jeu',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.orange,
+          ),
+        ),
+        const SizedBox(height: 20),
+        Expanded(
+          child: ListView.builder(
+            itemCount: _roles.length,
+            itemBuilder: (context, index) => _buildRoleItem(_roles[index], index),
+          ),
+        ),
+      ],
     );
   }
 
-  void _ensureExpandedStatesInitialized(int length) {
-    if (_expandedRoles.length != length) {
-      _expandedRoles.clear();
-      _expandedRoles.addAll(List.generate(length, (_) => false));
-    }
-  }
-
-  Widget _buildRoleItem(Map<String, dynamic> role, int index) {
+  Widget _buildRoleItem(RoleAction role, int index) {
     return Column(
       children: [
         GestureDetector(
@@ -215,21 +197,13 @@ class _RulesPageState extends State<RulesPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Checkbox(
-                      value: false,
-                      onChanged: (_) {},
-                    ),
-                    Text(
-                      role['name'] ?? 'Sans nom',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+                Text(
+                  role.name,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
                 ),
                 AnimatedRotation(
                   turns: _expandedRoles[index] ? 0.5 : 0,
@@ -241,16 +215,12 @@ class _RulesPageState extends State<RulesPage> {
           ),
         ),
         if (_expandedRoles[index])
-          Column(
-            children: [
-              _buildImageContainer('assets/images/image${index + 1}.svg'),
-              const SizedBox(height: 8),
-              Text(
-                role['description'] ?? 'Pas de description.',
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 15),
-            ],
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              role.description,
+              style: const TextStyle(fontSize: 16),
+            ),
           ),
       ],
     );

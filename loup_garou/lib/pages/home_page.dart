@@ -22,8 +22,9 @@ class MainPage extends StatelessWidget {
               child: ElevatedButton(
                 
                 onPressed: () {
-                  Navigator.pushNamed(context,
-                   '/gameMode'
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ChoseGameMode()),
                   );
                 },
                 

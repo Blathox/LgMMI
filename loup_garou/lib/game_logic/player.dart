@@ -1,14 +1,14 @@
 import 'package:loup_garou/game_logic/roles.dart';
 
 class Player {
-  String name; // Nom du joueur
-  RoleAction role; // Rôle attribué au joueur
+  String idPlayer = ''; // Identifiant unique du joueur
+  String name;
+  late RoleAction role;
   late String roleName;
   bool isAlive; // Statut : vivant ou mort
   int voteCount = 0; // Nombre de votes reçus
   bool isLinked = false; // Joueur lié (Cupidon, etc.)
-  bool isTargeted = false; // Joueur ciblé par une action
-  String idPlayer = ''; // Identifiant unique du joueur
+  bool isTargeted = false; // Joueur ciblé par une action 
 
   // Constructeur
   Player(this.name, this.isAlive, {RoleAction? initialRole})

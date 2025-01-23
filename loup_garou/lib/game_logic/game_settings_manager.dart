@@ -7,7 +7,7 @@ class GameSettingsManager {
   int nbPlayers = 6;
   int nbWolves = 1;
   late int nbVillagers;
-  int voteDuration;
+  late int voteDuration;
   late List<RoleAction> roles; // Liste complète des rôles
   late List<RoleAction> rolesSelected; // Liste des rôles assignés
   final List<RoleAction> optionalRoles = []; // Liste des rôles facultatifs

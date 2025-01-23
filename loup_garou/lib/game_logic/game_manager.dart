@@ -1,6 +1,4 @@
-
 import 'dart:core';
-
 import 'package:flutter/material.dart';
 import 'package:loup_garou/game_logic/player.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -26,7 +24,6 @@ class GameManager {
   final supabase = Supabase.instance.client;
 
   GameManager(this.roles) {
-    
     roles = roles;
     rolesAttribued = [];
   }
@@ -35,6 +32,7 @@ class GameManager {
   set setRoles(List<RoleAction> roles) {
     this.roles = roles;
   }
+
   set playersManager(PlayersManager playersManager) {
     playersM = playersManager;
   }
@@ -46,25 +44,25 @@ class GameManager {
   void updateMessage(String newMessage) {
     messageNotifier.value = newMessage; // Notifie automatiquement les listeners
   }
-    void startGame(BuildContext context, String gameId) async {
-      isRunning = true;
-      // ignore: avoid_print
-      print(isRunning);
-    // gamePhase.currentPhase = Phase.Night;
 
-    // await processNightActions(context);
-    // await processDayActions(context, gameId);
+
+  void startGame(BuildContext context, String gameId) async {
+    isRunning = true;
+    print(isRunning);
+    gamePhase.currentPhase = Phase.Night;
+
+    await processNightActions(context);
+    await processDayActions(context, gameId);
   }
-  void processGame(BuildContext context) async {
-      gamePhase.switchPhase();
-      print("Phase actuelle : ${gamePhase.currentPhase}");
-      // if(gamePhase.currentPhase == Phase.Night){
-        await processNightActions(context);
-    //   }else if(gamePhase.currentPhase == Phase.Day){
-    //     // await processDayActions(context, 'gameId');
-      
-    // }
 
+  void processGame(BuildContext context) async {
+    gamePhase.switchPhase();
+    print("Phase actuelle : ${gamePhase.currentPhase}");
+    if (gamePhase.currentPhase == Phase.Night) {
+      await processNightActions(context);
+    } else if (gamePhase.currentPhase == Phase.Day) {
+      await processDayActions(context, 'gameId');
+    }
   }
 
   Future <List<Map<String, dynamic>>> fetchKilledPlayers() async {
@@ -84,7 +82,6 @@ class GameManager {
     }
   }
 
-
   Future<int> fetchVoteDuration(String gameId) async {
     try {
       final response = await supabase
@@ -94,7 +91,8 @@ class GameManager {
           .single();
 
       if (response.isEmpty) {
-        print("Erreur : Durée de vote introuvable, valeur par défaut utilisée.");
+        print(
+            "Erreur : Durée de vote introuvable, valeur par défaut utilisée.");
         return 90;
       }
 
@@ -114,7 +112,8 @@ class GameManager {
     }
     print("Fin de la phase de nuit.");
   }
-void attribuerRoles(){
+
+  void attribuerRoles() {
     updateMessage("Attribution des rôles");
     print('attribution roles $roles');
     print(playersM.playerList.length);
@@ -127,29 +126,30 @@ void attribuerRoles(){
       roles.remove(roles[i]);
     }
     rolesAttribued.sort((a, b) => a.order.compareTo(b.order));
-   updateMessage("Les rôles ont été attribués");
+    updateMessage("Les rôles ont été attribués");
   }
+
   Future<void> processDayActions(BuildContext context, String gameId) async {
     print("Le village se réveille...");
 
     // Annonce des joueurs tués
     Future<List<Map<String, dynamic>>> fetchKilledPlayers() async {
-  try {
-    final response = await supabase
-        .from('PLAYERS')
-        .select('id, name, role')
-        .eq('killedAtNight', true);
+      try {
+        final response = await supabase
+            .from('PLAYERS')
+            .select('id, name, role')
+            .eq('killedAtNight', true);
 
-    if (response.isEmpty) {
-      return [];
+        if (response.isEmpty) {
+          return [];
+        }
+        return List<Map<String, dynamic>>.from(response);
+      } catch (error) {
+        print("Erreur lors de la récupération des joueurs tués : $error");
+        return [];
+      }
     }
-    return List<Map<String, dynamic>>.from(response);
-  } catch (error) {
-    print("Erreur lors de la récupération des joueurs tués : $error");
-    return [];
-  }
-}
-  
+
     // Phase de discussion avec le chat
     // openChatScreen(context, gameId);
 
@@ -158,7 +158,7 @@ void attribuerRoles(){
     print("Durée de la phase de vote : $voteDuration secondes.");
 
     // Attendre la fin de la durée configurée
-    await Future.delayed(Duration(seconds :voteDuration));
+    await Future.delayed(Duration(seconds: voteDuration));
     print("Fin de la phase de vote.");
 
     // Passer à la phase suivante
@@ -173,8 +173,4 @@ void attribuerRoles(){
   //     ),
   //   );
   // }
-
- 
-
- 
 }
