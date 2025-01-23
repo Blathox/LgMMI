@@ -148,10 +148,10 @@ class GameModeCard extends StatelessWidget {
     if (redirect) {
       // Redirection vers une autre page avec le titre comme argument GameMode
       Navigator.pushNamed(
-        context,
-        '/settingsGame',
-        arguments: title,
-      );
+  context,
+  '/settingsGame',
+  arguments: {'title': "Créer une partie privée"},
+);
     } else {
       // Ouvrir une pop-up
       _showGameCodeDialog(context);

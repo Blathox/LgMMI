@@ -43,7 +43,6 @@ class Villageois extends RoleAction {
   }
 }
 
-
 // Classe Loup-Garou
 class LoupGarou extends RoleAction {
   List<String> availableTargets = [];
@@ -98,10 +97,6 @@ void selectTarget(String targetName) {
     availableTargets = players;
     print("Cibles disponibles pour les Loups-Garous : ${availableTargets.join(', ')}");
   }}
-
-  
-
-
 
 // Classe Sorcière (hérite de Villageois)
 class Sorciere extends Villageois {
