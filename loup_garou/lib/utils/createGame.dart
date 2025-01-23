@@ -20,8 +20,8 @@ var newSettings= {
 };
 print(newSettings);
 
-   final authResponse = await Globals.supabase.from('GAMES').insert({'settings': newSettings, 'game_code': codeGame, 'status': 'waiting', 'created_at': date.toIso8601String(), 'updated_at':date.toIso8601String(),'users':[Globals.userId] });
-  print('test $authResponse');
+   final authResponse = await Globals.supabase.from('GAMES').insert({'settings': newSettings, 'game_code': codeGame, 'status': 'waiting', 'created_at': date.toIso8601String(), 'updated_at':date.toIso8601String(),'users':[Globals.userId] }).select('id').single();
+  Globals.gameId= authResponse['id'];
   sm.showSnackBar(
       SnackBar(content: Text("Game created with code Game : $codeGame $authResponse")));
   return codeGame;

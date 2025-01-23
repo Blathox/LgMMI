@@ -12,6 +12,7 @@ class Globals {
   static String gameCode = '';
   static GameSettingsManager gameSettings = GameSettingsManager(300);
   static GameManager gameManager = GameManager([]);
+  static String gameId='';
   
   /// Initialise les rôles depuis Supabase
   static Future<List<RoleAction>> fetchRolesFromSupabase() async {

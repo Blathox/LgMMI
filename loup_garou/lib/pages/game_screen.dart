@@ -28,6 +28,8 @@ class _GameScreenState extends State<GameScreen> {
     try {
       // Initialisation des rôles à partir de Supabase
       for (var role in Globals.gameSettings.rolesSelected) {
+                print('role ${role.getName}');
+
         final response = await Supabase.instance.client
             .from('ROLES')
             .select()
@@ -38,6 +40,7 @@ class _GameScreenState extends State<GameScreen> {
           print('Erreur lors de la récupération du rôle $role : $response');
           continue;
         }
+        print('role ${role.getName}');
 
         // Ajouter les rôles à la liste
         switch (role.getName) {
@@ -98,8 +101,13 @@ class _GameScreenState extends State<GameScreen> {
           isLoading = false;
         });
       }
-
+      
       // Lancer la première phase de jeu
+      // Attribuer les rôles et commencer le jeu
+      Globals.gameManager.attribuerRoles();
+      Globals.supabase.from('PLAYERS').insert({'game_id':Globals.gameId,'user_id': Globals.userId,'role': Globals.playerManager.getPlayerById(Globals.userId).getRole().getName,'status':true,'killedatnight':false});
+      print('test');
+
       Globals.gameManager.processGame(context);
     } catch (e) {
       print('Erreur pendant l\'initialisation : $e');

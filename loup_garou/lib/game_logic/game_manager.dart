@@ -45,6 +45,7 @@ class GameManager {
     messageNotifier.value = newMessage; // Notifie automatiquement les listeners
   }
 
+
   void startGame(BuildContext context, String gameId) async {
     isRunning = true;
     print(isRunning);
