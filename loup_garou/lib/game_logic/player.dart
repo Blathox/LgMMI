@@ -7,6 +7,7 @@ class Player {
   late String roleName;
   bool isAlive;
   int voteCount = 0;
+  String idPlayer='';
   bool isLinked = false;
   bool isTargeted = false;
   Player(this.name, this.isAlive){
@@ -67,6 +68,9 @@ class Player {
 
   String getName() {
     return name;
+  }
+  String getIdPlayer(){
+    return idPlayer;
   }
 
   @override

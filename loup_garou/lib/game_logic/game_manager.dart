@@ -128,16 +128,16 @@ void attribuerRoles(){
     rolesAttribued.sort((a, b) => a.order.compareTo(b.order));
    updateMessage("Les rôles ont été attribués");
   }
-//   Future<void> processDayActions(BuildContext context, String gameId) async {
-//     print("Le village se réveille...");
+  Future<void> processDayActions(BuildContext context, String gameId) async {
+    print("Le village se réveille...");
 
-//     // Annonce des joueurs tués
-//     Future<List<Map<String, dynamic>>> fetchKilledPlayers() async {
-//   try {
-//     final response = await supabase
-//         .from('PLAYERS')
-//         .select('id, name, role')
-//         .eq('killedAtNight', true);
+    // Annonce des joueurs tués
+    Future<List<Map<String, dynamic>>> fetchKilledPlayers() async {
+  try {
+    final response = await supabase
+        .from('PLAYERS')
+        .select('id, name, role')
+        .eq('killedAtNight', true);
 
     if (response.isEmpty) {
       return [];
@@ -157,7 +157,7 @@ void attribuerRoles(){
     print("Durée de la phase de vote : $voteDuration secondes.");
 
     // Attendre la fin de la durée configurée
-    await Future.delayed(Duration(seconds = voteDuration));
+    await Future.delayed(Duration(seconds :voteDuration));
     print("Fin de la phase de vote.");
 
     // Passer à la phase suivante
