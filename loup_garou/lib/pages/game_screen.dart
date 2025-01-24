@@ -1,242 +1,148 @@
-import 'dart:async';
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
+import 'package:loup_garou/game_logic/game_handler.dart';
 import 'package:loup_garou/game_logic/game_manager.dart';
-import 'package:loup_garou/game_logic/roles.dart';
+import 'package:loup_garou/game_logic/phases.dart';
 import 'package:loup_garou/visuals/variables.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-class GameScreen extends StatefulWidget {
-  const GameScreen({super.key});
+class GameScreen extends StatelessWidget {
+  final GameHandler gameHandler;
 
-  @override
-  _GameScreenState createState() => _GameScreenState();
-}
-
-class _GameScreenState extends State<GameScreen> {
-  List<RoleAction> listeRoles = [];
-  bool isLoading = true;
-  bool isNight = true;
-  String phaseTitle = "Phase Nuit";
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _initializeGame();
-  }
-
-  Future<void> _initializeGame() async {
-    try {
-      // Initialisation des rôles à partir de Supabase
-      for (var role in Globals.gameSettings.rolesSelected) {
-                print('role ${role.getName}');
-
-        final response = await Supabase.instance.client
-            .from('ROLES')
-            .select()
-            .eq('name', role.getName)
-            .maybeSingle();
-        
-        if (response == null) {
-          print('Erreur lors de la récupération du rôle $role : $response');
-          continue;
-        }
-        print('role ${role.getName}');
-
-        // Ajouter les rôles à la liste
-        switch (role.getName) {
-          case 'Loup-Garou':
-            listeRoles.add(LoupGarou(
-              description: response['description'],
-              order: response['order'],
-            ));
-            break;
-          case 'Villageois':
-            listeRoles.add(Villageois(
-              description: response['description'],
-              order: response['order'] ?? 0,
-            ));
-            break;
-          case 'Sorcière':
-            listeRoles.add(Sorciere(
-              description: response['description'],
-              order: response['order'],
-            ));
-            break;
-          case 'Chasseur':
-            listeRoles.add(Chasseur(
-              description: response['description'],
-              order: response['order'],
-            ));
-            break;
-          case 'Cupidon':
-            listeRoles.add(Cupidon(
-              description: response['description'],
-              order: response['order'],
-            ));
-            break;
-          case 'Voyante':
-            listeRoles.add(Voyante(
-              description: response['description'],
-              order: response['order'],
-            ));
-            break;
-          default:
-            print('Rôle inconnu : $role');
-            break;
-        }
-      }
-
-      // Initialiser le game manager
-      Globals.gameManager.setRoles = listeRoles;
-      Globals.gameManager.playersManager = Globals.playerManager;
-      print('Roles: $listeRoles');
-
-      // Attribuer les rôles et commencer le jeu
-      Globals.gameManager.attribuerRoles();
-      Globals.gameManager.startGame(context, Globals.gameCode);
-
-      // Mettre à jour l'état une fois le chargement terminé
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
-      
-      // Lancer la première phase de jeu
-      // Attribuer les rôles et commencer le jeu
-      Globals.gameManager.attribuerRoles();
-      Globals.supabase.from('PLAYERS').insert({'game_id':Globals.gameId,'user_id': Globals.userId,'role': Globals.playerManager.getPlayerById(Globals.userId).getRole().getName,'status':true,'killedatnight':false});
-      print('test');
-
-      Globals.gameManager.processGame(context);
-    } catch (e) {
-      print('Erreur pendant l\'initialisation : $e');
-    }
-  }
-
-  void startDiscussionPhase() {
-    setState(() {
-      isNight = false;
-      phaseTitle = "Phase Jour - Discussion";
-    });
-
-    // Simuler un délai de discussion (exemple : 30 secondes)
-    Future.delayed(Duration(seconds: Globals.gameSettings.voteDuration), () {
-      startVotingPhase();
-    });
-  }
-
-  void startVotingPhase() {
-    setState(() {
-      phaseTitle = "Phase Jour - Temps de Vote";
-    });
-
-    // Simuler un délai pour le vote (exemple : 20 secondes)
-    Future.delayed(Duration(seconds: Globals.gameSettings.voteTime), () {
-      setState(() {
-        // Revenir à la phase de nuit
-        isNight = true;
-        phaseTitle = "Phase Nuit";
-        Globals.gameManager.processGame(context);
-      });
-    });
-  }
+  GameScreen({required this.gameHandler});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: isNight ? Colors.black : Colors.white,
-      appBar: AppBar(
-        backgroundColor: isNight ? Colors.black : Colors.white,
-        foregroundColor: isNight ? Colors.white : Colors.black,
-        title: Text(
-          phaseTitle,
-          style: TextStyle(
-            color: isNight ? Colors.white : Colors.black,
+      appBar: AppBar(title: Text("Loup-Garou")),
+      body: Column(
+        children: [
+          ValueListenableBuilder<String>(
+            valueListenable: gameHandler.gameMessage,
+            builder: (context, message, child) {
+              return Text(message); // Affiche le message du jeu
+            },
           ),
-        ),
-      ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
+          ValueListenableBuilder<GamePhase>(
+            valueListenable: gameHandler.currentPhase,
+            builder: (context, phase, child) {
+              return Text("Phase actuelle: ${phase.currentPhase}");
+            },
+          ),
+          ValueListenableBuilder<String>(
+            valueListenable: gameHandler.currentRole,
+            builder: (context, role, child) {
+              return Text("En attente des $role...");
+            },
+          ),
+          ElevatedButton(
+            onPressed: () => showRoleActions(context, gameHandler.currentRole.value),
+            child: Text("Actions disponibles"),
+          ),
+          if (gameHandler.currentPhase.value.currentPhase == "Jour")
+            Column(
               children: [
-                // Informations sur le jeu
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Joueurs : ${Globals.playerManager.playerList.length}',
-                      style: TextStyle(
-                        color: isNight ? Colors.white : Colors.black,
-                      ),
-                    ),
-                    Text(
-                      'Phase : ${Globals.gameManager.gamePhase.currentPhase}',
-                      style: TextStyle(
-                        color: isNight ? Colors.white : Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-
-                // Message dynamique du jeu
-                Text(
-                  Globals.gameManager.getMessage,
-                  style: TextStyle(
-                    color: isNight ? Colors.white : Colors.black,
-                  ),
-                ),
-
-                // Liste des joueurs
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: Globals.playerManager.playerList.length,
-                    itemBuilder: (context, index) {
-                      final player = Globals.playerManager.playerList[index];
-                      return ListTile(
-                        title: Text(
-                          player.getName(),
-                          style: TextStyle(
-                            color: isNight ? Colors.white : Colors.black,
-                          ),
-                        ),
-                        subtitle: Text(
-                          player.isAlive
-                              ? "En vie"
-                              : "Éliminé (${player.isTargeted ? 'ciblé' : ''})",
-                          style: TextStyle(
-                            color: isNight ? Colors.grey : Colors.black54,
-                          ),
-                        ),
-                      );
+                Text("Votez pour un joueur"),
+                ...gameHandler.playersManager.getLivingPlayers().map((player) {
+                  return ListTile(
+                    title: Text(player),
+                    trailing: Text("Votes: ${gameHandler.playersManager.getVotes(player)}"),
+                    onTap: () {
+                      gameHandler.gameManager.voteFor(player);
                     },
-                  ),
-                ),
-
-                // Affichage du rôle actuel du joueur (pour l'interface joueur)
-                if (Globals.playerManager.getPlayerById(Globals.userId) != null)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ListTile(
-                      title: Text(
-                        Globals.playerManager.getPlayerById(Globals.userId).getName(),
-                        style: TextStyle(
-                          color: isNight ? Colors.white : Colors.black,
-                        ),
-                      ),
-                      subtitle: Text(
-                        Globals.playerManager
-                            .getPlayerById(Globals.userId)
-                            .getRoleName(),
-                        style: TextStyle(
-                          color: isNight ? Colors.grey : Colors.black54,
-                        ),
-                      ),
-                    ),
-                  ),
+                  );
+                }).toList(),
               ],
             ),
+        ],
+      ),
     );
+  }
+
+  void showRoleActions(BuildContext context, String role) {
+    List<String> players = gameHandler.playersManager.getLivingPlayers();
+
+    if (role == "Loup-Garou") {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Choisissez une victime"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: players.map((player) {
+              return ListTile(
+                title: Text(player),
+                onTap: () {
+                  Navigator.pop(context);
+                  gameHandler.gameManager.setVictim(player);
+                },
+              );
+            }).toList(),
+          ),
+        ),
+      );
+    } else if (role == "Sorcière") {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Sorcière - Actions"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: Text("Sauver la victime"),
+                onTap: () {
+                  Navigator.pop(context);
+                  gameHandler.gameManager.saveVictim();
+                },
+              ),
+              ListTile(
+                title: Text("Tuer un joueur"),
+                onTap: () {
+                  Navigator.pop(context);
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text("Choisissez une cible"),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: players.map((player) {
+                          return ListTile(
+                            title: Text(player),
+                            onTap: () {
+                              Navigator.pop(context);
+                              gameHandler.gameManager.setTarget(player);
+                            },
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      );
+    } else if (role == "Villageois") {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Phase de vote"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: players.map((player) {
+              return ListTile(
+                title: Text(player),
+                onTap: () {
+                  Navigator.pop(context);
+                  gameHandler.gameManager.voteFor(player);
+                },
+              );
+            }).toList(),
+          ),
+        ),
+      );
+    }
   }
 }

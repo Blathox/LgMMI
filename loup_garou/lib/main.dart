@@ -7,10 +7,12 @@ import 'package:loup_garou/pages/login_screen.dart';
 import 'package:loup_garou/pages/newPreGamePage.dart';
 import 'package:loup_garou/pages/rules_page.dart';
 import 'package:loup_garou/pages/waiting_screen.dart';
+import 'package:loup_garou/utils/subscription.dart';
 import 'package:loup_garou/visuals/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:loup_garou/pages/settings_page.dart';
 import 'package:loup_garou/pages/signup_screen2.dart';
+import 'package:loup_garou/game_logic/game_handler.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,7 +49,7 @@ class MyApp extends StatelessWidget {
         '/globalSettings':(context)=>const SettingsPage(),
         '/rulesPage':(context) => const RulesPage(),
         '/gameMode':(context)=>const ChoseGameMode(),
-        '/game':(context)=>const GameScreen()
+        '/game': (context) => GameScreen(gameHandler: gameHandler),
       },
       home: const LoginScreen(),
     );
