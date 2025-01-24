@@ -1,9 +1,10 @@
-import 'dart:async';
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
+import 'package:loup_garou/game_logic/game_handler.dart';
 import 'package:loup_garou/game_logic/game_manager.dart';
-import 'package:loup_garou/game_logic/roles.dart';
+import 'package:loup_garou/game_logic/phases.dart';
 import 'package:loup_garou/visuals/variables.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -139,20 +140,33 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: isNight ? Colors.black : Colors.white,
-      appBar: AppBar(
-        backgroundColor: isNight ? Colors.black : Colors.white,
-        foregroundColor: isNight ? Colors.white : Colors.black,
-        title: Text(
-          phaseTitle,
-          style: TextStyle(
-            color: isNight ? Colors.white : Colors.black,
+      appBar: AppBar(title: Text("Loup-Garou")),
+      body: Column(
+        children: [
+          ValueListenableBuilder<String>(
+            valueListenable: gameHandler.gameMessage,
+            builder: (context, message, child) {
+              return Text(message); // Affiche le message du jeu
+            },
           ),
-        ),
-      ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
+          ValueListenableBuilder<GamePhase>(
+            valueListenable: gameHandler.currentPhase,
+            builder: (context, phase, child) {
+              return Text("Phase actuelle: ${phase.currentPhase}");
+            },
+          ),
+          ValueListenableBuilder<String>(
+            valueListenable: gameHandler.currentRole,
+            builder: (context, role, child) {
+              return Text("En attente des $role...");
+            },
+          ),
+          ElevatedButton(
+            onPressed: () => showRoleActions(context, gameHandler.currentRole.value),
+            child: Text("Actions disponibles"),
+          ),
+          if (gameHandler.currentPhase.value.currentPhase == "Jour")
+            Column(
               children: [
                 // Informations sur le jeu
                 Row(
