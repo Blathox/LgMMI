@@ -181,3 +181,8 @@ class GameManager {
   }
 
 }
+
+  /// ============================================
+  /// Composant RoleReveal ( permet d'afficher son rôle sur l'écran)
+  /// ============================================ 
+  

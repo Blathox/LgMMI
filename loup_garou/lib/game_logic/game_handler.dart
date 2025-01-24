@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:loup_garou/game_logic/game_manager.dart';
 import 'package:loup_garou/game_logic/phases.dart';
 import 'package:loup_garou/game_logic/players_manager.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class GameHandler {
   final GameManager gameManager;
@@ -25,7 +26,7 @@ class GameHandler {
   void switchPhase(BuildContext context) {
     gameManager.processGame(context, 'game_id');
     currentPhase.value = gameManager.gamePhase;
-    currentRole.value = gameManager.getCurrentRole(); // Implémente cette méthode dans GameManager
+    currentRole.value = playersManager.player(); // Implémente cette méthode dans GameManager
     updateGameMessage("Phase: ${gameManager.gamePhase.currentPhase}");
   }
 
@@ -33,4 +34,4 @@ class GameHandler {
     gameManager.attribuerRoles();
     updateGameMessage("Les rôles ont été attribués !");
   }
-}
+}*/

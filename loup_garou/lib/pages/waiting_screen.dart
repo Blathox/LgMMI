@@ -189,7 +189,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
                               .update({'status': 'started'})
                               .eq('game_code', Globals.gameCode);
                           if (mounted) {
-                            Navigator.pushNamed(context, '/game', arguments: {
+                            Navigator.pushNamed(context, '/roleReveal', arguments: {
                               'isHost': isHost,
                             });
                           }

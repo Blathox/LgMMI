@@ -7,7 +7,7 @@ import 'package:loup_garou/pages/login_screen.dart';
 import 'package:loup_garou/pages/newPreGamePage.dart';
 import 'package:loup_garou/pages/rules_page.dart';
 import 'package:loup_garou/pages/waiting_screen.dart';
-import 'package:loup_garou/utils/subscription.dart';
+import 'package:loup_garou/pages/roles_reveal.dart';
 import 'package:loup_garou/visuals/colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:loup_garou/pages/settings_page.dart';
@@ -49,7 +49,8 @@ class MyApp extends StatelessWidget {
         '/globalSettings':(context)=>const SettingsPage(),
         '/rulesPage':(context) => const RulesPage(),
         '/gameMode':(context)=>const ChoseGameMode(),
-        '/game': (context) => GameScreen(gameHandler: gameHandler),
+        '/roleReveal':(context)=>const RolePage(),
+        '/gameScreen':(context)=> const GameScreen(),
       },
       home: const LoginScreen(),
     );
